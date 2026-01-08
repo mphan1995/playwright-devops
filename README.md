@@ -3,8 +3,9 @@
 A production-style DevOps simulation UI plus Playwright tests. The UI models a full delivery pipeline with Jenkins, Terraform, Ansible, Prometheus, and Grafana so you can visualize how each stage behaves during a release.
 
 ## What you get
-- A realistic DevOps control room UI (`index.html`, `style.css`, `script.js`).
-- A simulated CI/CD flow with pipeline stages, metrics, and logs.
+- A multi-page DevOps control room UI under `ui/`.
+- Shared navigation + header components (RBAC-aware).
+- Simulated CI/CD flow with pipeline stages, metrics, and logs.
 - Existing Playwright test setup (run with `npx playwright test`).
 - Environment stubs in `env/` for local and staging.
 
@@ -27,18 +28,30 @@ A production-style DevOps simulation UI plus Playwright tests. The UI models a f
    ```
 5. Open the simulation in your browser:
    ```
-   http://localhost:8080/index.html
+   http://localhost:8080/ui/pages/index.html
    ```
 
-## DevOps simulation flow (UI)
-1. Source Sync (Jenkins) - fetches code from the main branch.
-2. Build Artifact (Jenkins) - builds and tags the container image.
-3. Playwright Unit Tests - runs tests for API and UI safety checks.
-4. Terraform Plan - detects drift and proposes infrastructure changes.
-5. Terraform Apply - applies approved changes.
-6. Ansible Deploy - configures services and rolls out the release.
-7. Post-Deploy Tests - smoke and regression checks.
-8. Observability Gate - Prometheus metrics and Grafana dashboards validate health.
+## UI pages
+- `ui/pages/index.html` - dashboard (pipeline, metrics, QA gates).
+- `ui/pages/services.html` - service health and blast radius view.
+- `ui/pages/users.html` - user directory and RBAC overview.
+- `ui/pages/permissions.html` - policy matrix and permissions.
+- `ui/pages/settings.html` - environment settings and release guardrails.
+
+## Navigation, RBAC, and state
+- Navigation is real multi-page routing, not a single-page view.
+- RBAC rules are enforced in the UI:
+  - Admin: trigger + pause/resume.
+  - Operator: resume only.
+  - User: read-only.
+- Role and simulation state persist in `localStorage` to test state retention across pages.
+
+## Blast radius and isolation
+- `services.html` simulates a telemetry feed that can fail without breaking the rest of the system.
+- Trigger a failure from the UI button or open:
+  ```
+  http://localhost:8080/ui/pages/services.html?fail=1
+  ```
 
 ## Environment configuration
 - `env/local.env` contains a `BASE_URL` placeholder for Playwright.
@@ -52,9 +65,11 @@ set +a
 ```
 
 ## Project layout
-- `index.html` - UI structure and layout.
-- `style.css` - styling, animation, and responsive layout.
-- `script.js` - simulation logic for pipeline, metrics, and logs.
+- `ui/components/` - shared navigation and header components.
+- `ui/assets/style.css` - styling, animation, responsive layout.
+- `ui/assets/app.js` - global navigation, RBAC, and state.
+- `ui/assets/dashboard.js` - dashboard pipeline simulation.
+- `ui/assets/services.js` - service health feed simulation.
 - `tests/` - Playwright tests.
 - `playwright.config.ts` - Playwright configuration.
 - `env/` - environment files.
