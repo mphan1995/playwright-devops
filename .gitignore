@@ -1,0 +1,41 @@
+# =========================
+# Node / Playwright
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Playwright artifacts
+playwright-report/
+test-results/
+reports/
+*.zip
+
+# =========================
+# Environment variables
+# =========================
+.env
+*.env
+!env/example.env
+
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# =========================
+# Python (do NOT use for Playwright)
+# =========================
+.venv/
+__pycache__/
+*.pyc
+
+# =========================
+# Temporary / runtime
+# =========================
+tmp/
+.cache/
