@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playwright DevOps Flight Deck</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="atmosphere">
+      <span class="orb orb-1"></span>
+      <span class="orb orb-2"></span>
+      <span class="orb orb-3"></span>
+      <span class="grid-glow"></span>
+    </div>
+
+    <div class="app">
+      <header class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">Production Simulation</span>
+          <h1>Playwright DevOps Flight Deck</h1>
+          <p>
+            Unified view of CI/CD, infrastructure automation, configuration management, and observability for
+            production-like testing.
+          </p>
+          <div class="hero-badges">
+            <span class="pill">Environment: Production</span>
+            <span class="pill">Region: ap-southeast-1</span>
+            <span class="pill live">Live Simulation</span>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn primary" id="triggerRun">Trigger Release</button>
+          <button class="btn ghost" id="toggleSim">Pause Simulation</button>
+          <div class="hero-meta">
+            <div class="meta-block">
+              <span class="meta-label">Release ID</span>
+              <span class="meta-value" id="buildId">REL-2406</span>
+            </div>
+            <div class="meta-block">
+              <span class="meta-label">Commit</span>
+              <span class="meta-value code" id="commitHash">c9f2b18</span>
+            </div>
+            <div class="meta-block">
+              <span class="meta-label">Window</span>
+              <span class="meta-value" id="deployWindow">21:00-23:00 UTC</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="panel span-7 pipeline">
+          <div class="panel-head">
+            <div>
+              <h2>Release Pipeline</h2>
+              <p>Jenkins orchestrates build, Playwright tests, Terraform, and Ansible deploy.</p>
+            </div>
+            <span class="tag running" id="runState">Running</span>
+          </div>
+          <ol class="steps">
+            <li class="step" data-step="0" data-status="success">
+              <div>
+                <span class="step-title">Source Sync</span>
+                <span class="step-desc">Checkout main from origin</span>
+              </div>
+              <div class="step-meta">
+                <span class="chip">Jenkins</span>
+                <span class="step-status">Success</span>
+              </div>
+            </li>
+            <li class="step" data-step="1" data-status="success">
+              <div>
+                <span class="step-title">Build Artifact</span>
+                <span class="step-desc">Containerize app and tag image</span>
+              </div>
+              <div class="step-meta">
+                <span class="chip">Jenkins</span>
+                <span class="step-status">Success</span>
+              </div>
+            </li>
+            <li class="step" data-step="2" data-status="running">
+              <div>
+                <span class="step-title">Playwright Unit Tests</span>
+                <span class="step-desc">Headless tests against staging APIs</span>
+              </div>
+              <div class="step-meta">
+                <span class="chip">Playwright</span>
+                <span class="step-status">Running</span>
+              </div>
+            </li>
+            <li class="step" data-step="3" data-status="queued">
+              <div>
+                <span class="step-title">Terraform Plan</span>
+                <span class="step-desc">Compute infra drift and plan changes</span>
+              </div>
+              <div class="step-meta">
+                <span class="chip">Terraform</span>
+                <span class="step-status">Queued</span>
+              </div>
+            </li>
+            <li class="step" data-step="4" data-status="queued">
+              <div>
+                <span class="step-title">Terraform Apply</span>
+                <span class="step-desc">Apply approved infrastructure changes</span>
+              </div>
+              <div class="step-meta">
+                <span class="chip">Terraform</span>
+                <span class="step-status">Queued</span>
+              </div>
+            </li>
+            <li class="step" data-step="5" data-status="queued">
+              <div>
+                <span class="step-title">Ansible Deploy</span>
+                <span class="step-desc">Configure services and rollout</span>
+              </div>
+              <div class="step-meta">
+                <span class="chip">Ansible</span>
+                <span class="step-status">Queued</span>
+              </div>
+            </li>
+            <li class="step" data-step="6" data-status="queued">
+              <div>
+                <span class="step-title">Post-Deploy Tests</span>
+                <span class="step-desc">Smoke and regression checks</span>
+              </div>
+              <div class="step-meta">
+                <span class="chip">Playwright</span>
+                <span class="step-status">Queued</span>
+              </div>
+            </li>
+            <li class="step" data-step="7" data-status="queued">
+              <div>
+                <span class="step-title">Observability Gate</span>
+                <span class="step-desc">Prometheus and Grafana validation</span>
+              </div>
+              <div class="step-meta">
+                <span class="chip">Grafana</span>
+                <span class="step-status">Queued</span>
+              </div>
+            </li>
+          </ol>
+        </section>
+
+        <section class="panel span-5 stack">
+          <div class="panel-head">
+            <div>
+              <h2>Core Stack</h2>
+              <p>Operational services and their current posture.</p>
+            </div>
+            <span class="tag stable">Stable</span>
+          </div>
+          <div class="stack-grid">
+            <article class="stack-card">
+              <div class="stack-title">
+                <span>Jenkins</span>
+                <span class="dot success"></span>
+              </div>
+              <p>Pipeline orchestration with guarded approvals and build caching.</p>
+              <div class="stack-meta">
+                <span>Last run: 2m ago</span>
+                <span>Executors: 6/8</span>
+              </div>
+            </article>
+            <article class="stack-card">
+              <div class="stack-title">
+                <span>Terraform</span>
+                <span class="dot warn"></span>
+              </div>
+              <p>IaC plan detects 2 drifted resources awaiting review.</p>
+              <div class="stack-meta">
+                <span>State: locked</span>
+                <span>Drift: 2 resources</span>
+              </div>
+            </article>
+            <article class="stack-card">
+              <div class="stack-title">
+                <span>Ansible</span>
+                <span class="dot success"></span>
+              </div>
+              <p>Rolling deploy across app, worker, and edge fleets.</p>
+              <div class="stack-meta">
+                <span>Playbooks: 12</span>
+                <span>Success: 98%</span>
+              </div>
+            </article>
+            <article class="stack-card">
+              <div class="stack-title">
+                <span>Prometheus</span>
+                <span class="dot success"></span>
+              </div>
+              <p>Metrics ingestion from 142 targets across production.</p>
+              <div class="stack-meta">
+                <span>Scrape: 15s</span>
+                <span>Targets: 142</span>
+              </div>
+            </article>
+            <article class="stack-card">
+              <div class="stack-title">
+                <span>Grafana</span>
+                <span class="dot success"></span>
+              </div>
+              <p>Live dashboards and alert routing to on-call.</p>
+              <div class="stack-meta">
+                <span>Dashboards: 26</span>
+                <span>Alerts: 3</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel span-7 metrics">
+          <div class="panel-head">
+            <div>
+              <h2>Observability Signals</h2>
+              <p>Prometheus metrics rendered into Grafana-style tiles.</p>
+            </div>
+            <span class="tag" id="alertState">All Clear</span>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Request Rate</span>
+                <span class="metric-value" id="reqRate">1,240 rpm</span>
+              </div>
+              <canvas class="spark" data-color="#47d7c3"></canvas>
+            </div>
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>Error Rate</span>
+                <span class="metric-value" id="errRate">0.62%</span>
+              </div>
+              <canvas class="spark" data-color="#ff6f61"></canvas>
+            </div>
+            <div class="metric-card">
+              <div class="metric-header">
+                <span>P95 Latency</span>
+                <span class="metric-value" id="latency">240 ms</span>
+              </div>
+              <canvas class="spark" data-color="#f6b73c"></canvas>
+            </div>
+          </div>
+          <div class="note-strip">
+            <span>Alert routing: On-call primary (APAC)</span>
+            <span>Last incident: 12 days ago</span>
+          </div>
+        </section>
+
+        <section class="panel span-5 infra">
+          <div class="panel-head">
+            <div>
+              <h2>IaC and Config</h2>
+              <p>Terraform modules and Ansible playbooks in the current release.</p>
+            </div>
+            <span class="tag">Ready</span>
+          </div>
+          <div class="infra-grid">
+            <div class="infra-block">
+              <h3>Terraform Modules</h3>
+              <ul>
+                <li>vpc-core</li>
+                <li>eks-bluegreen</li>
+                <li>rds-postgres-ha</li>
+                <li>cdn-edge-cache</li>
+                <li>iam-policy-pack</li>
+              </ul>
+            </div>
+            <div class="infra-block">
+              <h3>Ansible Playbooks</h3>
+              <ul>
+                <li>baseline-hardening</li>
+                <li>app-config-rollout</li>
+                <li>worker-drain-replace</li>
+                <li>nginx-canary</li>
+                <li>log-forwarding</li>
+              </ul>
+            </div>
+            <div class="infra-block">
+              <h3>Promotion Gates</h3>
+              <ul>
+                <li>Security scan: passed</li>
+                <li>Terraform plan: pending approval</li>
+                <li>Smoke tests: queued</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel span-7 logs">
+          <div class="panel-head">
+            <div>
+              <h2>System Log</h2>
+              <p>Release events, approvals, and test checkpoints.</p>
+            </div>
+            <span class="tag">Streaming</span>
+          </div>
+          <ul class="log-list" id="logList">
+            <li>[21:12:04] Release REL-2406 queued by Jenkins pipeline.</li>
+            <li>[21:12:42] Build artifact created and pushed to registry.</li>
+            <li>[21:13:10] Playwright unit tests started for API suite.</li>
+            <li>[21:13:55] Terraform plan generated with 2 changes pending review.</li>
+            <li>[21:14:22] Grafana dashboards refreshed for release watch.</li>
+          </ul>
+        </section>
+
+        <section class="panel span-5 qa">
+          <div class="panel-head">
+            <div>
+              <h2>Quality Gate</h2>
+              <p>Playwright test health for the active release.</p>
+            </div>
+            <span class="tag" id="qaState">Green</span>
+          </div>
+          <div class="qa-grid">
+            <div class="qa-card">
+              <span class="qa-label">Total Tests</span>
+              <span class="qa-value" id="qaTotal">128</span>
+            </div>
+            <div class="qa-card">
+              <span class="qa-label">Passed</span>
+              <span class="qa-value" id="qaPassed">126</span>
+            </div>
+            <div class="qa-card">
+              <span class="qa-label">Failed</span>
+              <span class="qa-value" id="qaFailed">2</span>
+            </div>
+            <div class="qa-card">
+              <span class="qa-label">Flaky</span>
+              <span class="qa-value" id="qaFlaky">1</span>
+            </div>
+            <div class="qa-card">
+              <span class="qa-label">Duration</span>
+              <span class="qa-value" id="qaDuration">3m 12s</span>
+            </div>
+            <div class="qa-card">
+              <span class="qa-label">Coverage</span>
+              <span class="qa-value" id="qaCoverage">82%</span>
+            </div>
+          </div>
+          <div class="qa-footer">
+            <span>Quality gate: 95% pass rate required</span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
