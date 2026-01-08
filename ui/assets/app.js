@@ -122,6 +122,17 @@ function initRoleSelector() {
   });
 }
 
+function initRouteToggle() {
+  const toggleBtn = document.getElementById("routeToggleBtn");
+  if (!toggleBtn) return;
+
+  toggleBtn.addEventListener("click", () => {
+    const page = getCurrentPageKey();
+    const health = getRouteHealth();
+    setRouteBroken(page, !health[page]);
+  });
+}
+
 function updatePageHeader() {
   const titleEl = document.getElementById("pageTitle");
   const subtitleEl = document.getElementById("pageSubtitle");
@@ -134,6 +145,10 @@ function updatePageHeader() {
   if (subtitleEl) {
     subtitleEl.textContent = pageSubtitle;
   }
+}
+
+function getCurrentPageKey() {
+  return document.body.dataset.page || "dashboard";
 }
 
 function getRouteHealth() {
@@ -179,7 +194,7 @@ function ensureRouteFallback() {
 }
 
 function applyRouteHealth(health = getRouteHealth()) {
-  const page = document.body.dataset.page || "dashboard";
+  const page = getCurrentPageKey();
   const broken = Boolean(health[page]);
   const sections = Array.from(document.querySelectorAll(".page-content > section"));
   const fallback = ensureRouteFallback();
@@ -190,8 +205,44 @@ function applyRouteHealth(health = getRouteHealth()) {
 
   if (fallback) {
     const label = pageLabels[page] || page;
-    fallback.innerHTML = `<h3>${label} temporarily unavailable</h3><p>Route is degraded. Other pages remain online while this area recovers.</p>`;
+    fallback.innerHTML = `
+      <h3>${label} temporarily unavailable</h3>
+      <p>Route is degraded. Other pages remain online while this area recovers.</p>
+      <div class="route-fallback-actions">
+        <button class="btn ghost compact" data-recover-route data-role-allow="admin">Recover Page</button>
+      </div>
+    `;
+
+    const recoverBtn = fallback.querySelector("[data-recover-route]");
+    if (recoverBtn) {
+      recoverBtn.addEventListener("click", () => {
+        setRouteBroken(page, false);
+      });
+    }
+
+    applyRBAC(currentRole);
     fallback.hidden = !broken;
+  }
+
+  updateRouteStatusBadge(health);
+}
+
+function updateRouteStatusBadge(health = getRouteHealth()) {
+  const badge = document.getElementById("routeStatusBadge");
+  const toggleBtn = document.getElementById("routeToggleBtn");
+  if (!badge && !toggleBtn) return;
+
+  const page = getCurrentPageKey();
+  const broken = Boolean(health[page]);
+
+  if (badge) {
+    badge.textContent = `Route: ${broken ? "Broken" : "Healthy"}`;
+    badge.classList.remove("success", "fail");
+    badge.classList.add(broken ? "fail" : "success");
+  }
+
+  if (toggleBtn) {
+    toggleBtn.textContent = broken ? "Recover Route" : "Simulate Outage";
   }
 }
 
@@ -230,6 +281,7 @@ function initState() {
   updateSimulationBadge(getSimulationState());
   applyRouteHealth();
   updateRouteIndicator();
+  updateRouteStatusBadge();
 }
 
 async function loadComponent(slot) {
@@ -261,6 +313,7 @@ function initApp() {
   updatePageHeader();
   updateNavigationState();
   initRoleSelector();
+  initRouteToggle();
   initState();
 }
 
@@ -285,4 +338,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.addEventListener("route:health-change", (event) => {
   updateRouteIndicator(event.detail?.health);
   applyRouteHealth(event.detail?.health);
+  updateRouteStatusBadge(event.detail?.health);
 });
