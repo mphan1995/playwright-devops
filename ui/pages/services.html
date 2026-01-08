@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Service Health - Playwright DevOps</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+  </head>
+  <body data-page="services" data-page-title="Service Health" data-page-subtitle="Service mesh visibility with blast radius awareness.">
+    <div class="atmosphere">
+      <span class="orb orb-1"></span>
+      <span class="orb orb-2"></span>
+      <span class="orb orb-3"></span>
+      <span class="grid-glow"></span>
+    </div>
+
+    <div class="app-shell">
+      <aside class="sidebar" data-component="nav" data-component-src="../components/nav.html"></aside>
+
+      <div class="content">
+        <header class="topbar" data-component="header" data-component-src="../components/header.html"></header>
+
+        <main class="page-content">
+          <section class="hero compact">
+            <div class="hero-copy">
+              <span class="eyebrow">Blast Radius View</span>
+              <h2>Service Health Matrix</h2>
+              <p>Monitor upstream and downstream dependencies. Failures are isolated to this page.</p>
+              <div class="hero-badges">
+                <span class="pill">Telemetry: Live</span>
+                <span class="pill">Isolation: Enabled</span>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <div class="hero-meta">
+                <div class="meta-block">
+                  <span class="meta-label">Critical Services</span>
+                  <span class="meta-value" id="criticalCount">4</span>
+                </div>
+                <div class="meta-block">
+                  <span class="meta-label">Degraded</span>
+                  <span class="meta-value" id="degradedCount">1</span>
+                </div>
+                <div class="meta-block">
+                  <span class="meta-label">Last Update</span>
+                  <span class="meta-value" id="serviceUpdated">just now</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Service Status</h3>
+                <p>Simulated telemetry feed with graceful degradation handling.</p>
+              </div>
+              <div class="panel-actions">
+                <button class="btn ghost" id="toggleServiceFailure">Simulate Failure</button>
+                <button class="btn primary" id="retryServiceLoad">Reload Feed</button>
+              </div>
+            </div>
+            <div class="status-banner" id="serviceBanner">Telemetry feed healthy.</div>
+            <div class="service-grid" id="serviceGrid"></div>
+            <div class="empty-state" id="serviceEmpty" hidden>
+              <h4>Service feed unavailable</h4>
+              <p>The dashboard remains online. Retry to restore service telemetry.</p>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Blast Radius and Isolation</h3>
+                <p>Failure domains are scoped to avoid total outage.</p>
+              </div>
+              <span class="tag">Isolated</span>
+            </div>
+            <div class="blast-grid">
+              <div class="blast-card">
+                <h4>Customer APIs</h4>
+                <p>Protected by circuit breakers and autoscale policies.</p>
+                <span class="status-pill running">Healthy</span>
+              </div>
+              <div class="blast-card">
+                <h4>Internal Services</h4>
+                <p>Degraded components trigger fallback response plans.</p>
+                <span class="status-pill warn">Degraded</span>
+              </div>
+              <div class="blast-card">
+                <h4>Observability</h4>
+                <p>Metrics still available even if service health feed fails.</p>
+                <span class="status-pill running">Online</span>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="../assets/app.js" defer></script>
+    <script src="../assets/services.js" defer></script>
+  </body>
+</html>

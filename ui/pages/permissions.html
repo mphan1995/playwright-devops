@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Policies - Playwright DevOps</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+  </head>
+  <body data-page="permissions" data-page-title="Policies" data-page-subtitle="RBAC policy surface and environment guards.">
+    <div class="atmosphere">
+      <span class="orb orb-1"></span>
+      <span class="orb orb-2"></span>
+      <span class="orb orb-3"></span>
+      <span class="grid-glow"></span>
+    </div>
+
+    <div class="app-shell">
+      <aside class="sidebar" data-component="nav" data-component-src="../components/nav.html"></aside>
+
+      <div class="content">
+        <header class="topbar" data-component="header" data-component-src="../components/header.html"></header>
+
+        <main class="page-content">
+          <section class="hero compact">
+            <div class="hero-copy">
+              <span class="eyebrow">RBAC and Permissions</span>
+              <h2>Policy Matrix</h2>
+              <p>Permissions enforce release safety across Jenkins, Terraform, and Ansible.</p>
+              <div class="hero-badges">
+                <span class="pill">Policy pack: v4.2</span>
+                <span class="pill">Audit log: enabled</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Role Permissions</h3>
+                <p>Active role is highlighted to validate RBAC routing.</p>
+              </div>
+              <span class="tag">Policy</span>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Role</th>
+                    <th>Pipeline Controls</th>
+                    <th>Infrastructure</th>
+                    <th>Observability</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-role-row="admin">
+                    <td>Admin</td>
+                    <td>Trigger, pause, resume, approve gates</td>
+                    <td>Plan + apply</td>
+                    <td>Alert routing, dashboard edits</td>
+                  </tr>
+                  <tr data-role-row="operator">
+                    <td>Operator</td>
+                    <td>Resume only, view logs</td>
+                    <td>Plan only</td>
+                    <td>View dashboards</td>
+                  </tr>
+                  <tr data-role-row="user">
+                    <td>User</td>
+                    <td>View-only</td>
+                    <td>View-only</td>
+                    <td>View dashboards</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel split">
+            <div class="info-card">
+              <h4>Policy Checks</h4>
+              <ul>
+                <li>Terraform apply requires Admin approval</li>
+                <li>Operator can only resume paused releases</li>
+                <li>User roles cannot trigger new releases</li>
+              </ul>
+            </div>
+            <div class="info-card" data-role-allow="admin">
+              <h4>Pending Policy Updates</h4>
+              <ul>
+                <li>New gating rule for staging smoke tests</li>
+                <li>Mandatory canary window before full rollout</li>
+              </ul>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="../assets/app.js" defer></script>
+  </body>
+</html>

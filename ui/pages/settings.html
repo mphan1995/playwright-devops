@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - Playwright DevOps</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+  </head>
+  <body data-page="settings" data-page-title="Settings" data-page-subtitle="Environment controls and release safeguards.">
+    <div class="atmosphere">
+      <span class="orb orb-1"></span>
+      <span class="orb orb-2"></span>
+      <span class="orb orb-3"></span>
+      <span class="grid-glow"></span>
+    </div>
+
+    <div class="app-shell">
+      <aside class="sidebar" data-component="nav" data-component-src="../components/nav.html"></aside>
+
+      <div class="content">
+        <header class="topbar" data-component="header" data-component-src="../components/header.html"></header>
+
+        <main class="page-content">
+          <section class="hero compact">
+            <div class="hero-copy">
+              <span class="eyebrow">Release Guardrails</span>
+              <h2>Environment Settings</h2>
+              <p>Safeguards enforce production readiness before releases reach users.</p>
+              <div class="hero-badges">
+                <span class="pill">Defaults: Production</span>
+                <span class="pill">Change window: locked</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Release Controls</h3>
+                <p>Simulated toggles for runtime and deployment gates.</p>
+              </div>
+              <span class="tag">Guarded</span>
+            </div>
+            <div class="settings-grid">
+              <div class="setting-card">
+                <div>
+                  <h4>Change Window</h4>
+                  <p>Require releases within approved UTC windows.</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+              <div class="setting-card">
+                <div>
+                  <h4>Canary Requirement</h4>
+                  <p>Force 10% canary before full rollout.</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+              <div class="setting-card" data-role-allow="admin">
+                <div>
+                  <h4>Emergency Override</h4>
+                  <p>Bypass gates during critical incidents.</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+              <div class="setting-card">
+                <div>
+                  <h4>Alert Noise Filter</h4>
+                  <p>Suppress duplicate alert bursts during deploy.</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel split">
+            <div class="info-card">
+              <h4>Environments</h4>
+              <ul>
+                <li>Production: locked</li>
+                <li>Staging: writable</li>
+                <li>Sandbox: open</li>
+              </ul>
+            </div>
+            <div class="info-card">
+              <h4>Audit Trail</h4>
+              <ul>
+                <li>Retention: 180 days</li>
+                <li>Log shipping: enabled</li>
+                <li>Integrity checks: passing</li>
+              </ul>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="../assets/app.js" defer></script>
+  </body>
+</html>

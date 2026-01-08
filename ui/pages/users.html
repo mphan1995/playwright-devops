@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users - Playwright DevOps</title>
+    <link rel="stylesheet" href="../assets/style.css" />
+  </head>
+  <body data-page="users" data-page-title="Users" data-page-subtitle="Access roster and role assignments for the release.">
+    <div class="atmosphere">
+      <span class="orb orb-1"></span>
+      <span class="orb orb-2"></span>
+      <span class="orb orb-3"></span>
+      <span class="grid-glow"></span>
+    </div>
+
+    <div class="app-shell">
+      <aside class="sidebar" data-component="nav" data-component-src="../components/nav.html"></aside>
+
+      <div class="content">
+        <header class="topbar" data-component="header" data-component-src="../components/header.html"></header>
+
+        <main class="page-content">
+          <section class="hero compact">
+            <div class="hero-copy">
+              <span class="eyebrow">RBAC Directory</span>
+              <h2>User Directory</h2>
+              <p>Track who can act on releases and who is on-call.</p>
+              <div class="hero-badges">
+                <span class="pill">On-call: APAC</span>
+                <span class="pill">Audit: Enabled</span>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <button class="btn primary" data-role-allow="admin">Create User</button>
+              <button class="btn ghost" data-role-allow="admin">Export Audit</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Active Users</h3>
+                <p>Roles drive UI permissions and deployment controls.</p>
+              </div>
+              <span class="tag">Synced</span>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Region</th>
+                    <th>Last Action</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Minh Tran</td>
+                    <td>Admin</td>
+                    <td>APAC</td>
+                    <td>Approved Terraform apply</td>
+                    <td><span class="status-chip success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>Alex Nguyen</td>
+                    <td>Operator</td>
+                    <td>APAC</td>
+                    <td>Resumed paused release</td>
+                    <td><span class="status-chip success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>Jamie Le</td>
+                    <td>User</td>
+                    <td>US-East</td>
+                    <td>Viewed pipeline logs</td>
+                    <td><span class="status-chip warn">Read-only</span></td>
+                  </tr>
+                  <tr>
+                    <td>Quang Pham</td>
+                    <td>User</td>
+                    <td>EU-West</td>
+                    <td>Viewed service health</td>
+                    <td><span class="status-chip warn">Read-only</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel split">
+            <div class="info-card">
+              <h4>On-call Rotation</h4>
+              <p>Primary: APAC / Secondary: EU-West</p>
+              <ul>
+                <li>Pager rotation every 7 days</li>
+                <li>Escalation SLA: 10 minutes</li>
+                <li>Auto-ack enabled</li>
+              </ul>
+            </div>
+            <div class="info-card" data-role-allow="admin">
+              <h4>Pending Access Requests</h4>
+              <p>2 requests awaiting admin approval.</p>
+              <ul>
+                <li>Read-only access for new QA partner</li>
+                <li>Operator access for staging engineer</li>
+              </ul>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="../assets/app.js" defer></script>
+  </body>
+</html>
