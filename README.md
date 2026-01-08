@@ -41,10 +41,25 @@ A production-style DevOps simulation UI plus Playwright tests. The UI models a f
 ## Navigation, RBAC, and state
 - Navigation is real multi-page routing, not a single-page view.
 - RBAC rules are enforced in the UI:
-  - Admin: trigger + pause/resume.
-  - Operator: resume only.
+  - Admin: trigger, pause, approve, rollback, resume.
+  - Operator: resume, observe.
   - User: read-only.
 - Role and simulation state persist in `localStorage` to test state retention across pages.
+- Release state and approvals persist across refresh for realistic lifecycle testing.
+- Route health indicators show last navigation and broken route count.
+
+## Release simulation controls
+- Lifecycle states: Queued, Running, Paused, Blocked, Succeeded, Failed, Rolled Back.
+- Controls: Trigger, Pause, Resume, Approve, Reject, Rollback (RBAC-gated).
+- Incident toggles and recovery actions update policy signals and core status cards.
+
+## Partial failure and route health
+- Route health panel can simulate broken pages (for example: Services down while Users and Dashboard still load).
+- Broken routes show a fallback banner while other pages remain available.
+
+## Time-based conditions
+- Deployment, maintenance, and freeze windows are simulated on the dashboard.
+- Use the Override button to flip a window for testing.
 
 ## Blast radius and isolation
 - `services.html` simulates a telemetry feed that can fail without breaking the rest of the system.
@@ -68,7 +83,7 @@ set +a
 - `ui/components/` - shared navigation and header components.
 - `ui/assets/style.css` - styling, animation, responsive layout.
 - `ui/assets/app.js` - global navigation, RBAC, and state.
-- `ui/assets/dashboard.js` - dashboard pipeline simulation.
+- `ui/assets/dashboard/` - dashboard modules (release, incidents, routes, windows, metrics).
 - `ui/assets/services.js` - service health feed simulation.
 - `tests/` - Playwright tests.
 - `playwright.config.ts` - Playwright configuration.

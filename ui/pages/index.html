@@ -36,8 +36,6 @@
               </div>
             </div>
             <div class="hero-actions">
-              <button class="btn primary" id="triggerRun" data-role-allow="admin">Trigger Release</button>
-              <button class="btn ghost" id="toggleSim" data-role-allow="admin,operator">Pause Simulation</button>
               <div class="hero-meta">
                 <div class="meta-block">
                   <span class="meta-label">Release ID</span>
@@ -55,9 +53,9 @@
               <div class="rbac-panel">
                 <span class="rbac-title">RBAC Rules</span>
                 <ul>
-                  <li>Admin: trigger + pause/resume</li>
-                  <li>Operator: resume only</li>
-                  <li>User: read-only view</li>
+                  <li>Admin: trigger, pause, approve, rollback, resume</li>
+                  <li>Operator: resume, observe</li>
+                  <li>User: read-only</li>
                 </ul>
               </div>
             </div>
@@ -156,71 +154,233 @@
               </ol>
             </div>
 
+            <div class="panel span-5 release">
+              <div class="panel-head">
+                <div>
+                  <h3>Release Command Center</h3>
+                  <p>Lifecycle state, approvals, and release controls.</p>
+                </div>
+                <span class="tag queued" id="releaseStateBadge">Queued</span>
+              </div>
+              <div class="state-track">
+                <div class="state-item" data-state="queued">Queued</div>
+                <div class="state-item" data-state="running">Running</div>
+                <div class="state-item" data-state="paused">Paused</div>
+                <div class="state-item" data-state="blocked">Blocked</div>
+                <div class="state-item" data-state="succeeded">Succeeded</div>
+                <div class="state-item" data-state="failed">Failed</div>
+                <div class="state-item" data-state="rolled-back">Rolled Back</div>
+              </div>
+              <div class="control-grid">
+                <button class="btn primary" id="triggerRun" data-role-allow="admin">Trigger Release</button>
+                <button class="btn ghost" id="pauseRelease" data-role-allow="admin">Pause</button>
+                <button class="btn ghost" id="resumeRelease" data-role-allow="admin,operator">Resume</button>
+                <button class="btn ghost" id="approveRelease" data-role-allow="admin">Approve</button>
+                <button class="btn ghost" id="rejectRelease" data-role-allow="admin">Reject</button>
+                <button class="btn danger" id="rollbackRelease" data-role-allow="admin">Rollback</button>
+              </div>
+              <div class="approval-card">
+                <span>Approvals</span>
+                <span class="approval-count" id="approvalCount">0/2</span>
+              </div>
+              <div class="policy-list">
+                <div class="policy-item" data-policy="approvals">
+                  <span>2 approvals required</span>
+                  <span class="policy-status" id="policyApprovals">Pending</span>
+                </div>
+                <div class="policy-item" data-policy="drift">
+                  <span>Terraform drift must be 0</span>
+                  <span class="policy-status" id="policyDrift">Passing</span>
+                </div>
+                <div class="policy-item" data-policy="canary">
+                  <span>Canary success required</span>
+                  <span class="policy-status" id="policyCanary">Passing</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel span-7 incidents">
+              <div class="panel-head">
+                <div>
+                  <h3>Failure & Incident Simulation</h3>
+                  <p>Toggle incidents and validate graceful degradation.</p>
+                </div>
+                <span class="tag" id="incidentBadge">Stable</span>
+              </div>
+              <div class="incident-grid">
+                <div class="incident-block">
+                  <h4>Failure Signals</h4>
+                  <div class="incident-list">
+                    <button class="incident-btn" data-incident="terraformDrift" data-role-allow="admin">Terraform Drift Detected</button>
+                    <button class="incident-btn" data-incident="jenkinsQueue" data-role-allow="admin">Jenkins Queue Full</button>
+                    <button class="incident-btn" data-incident="jenkinsNode" data-role-allow="admin">Jenkins Node Down</button>
+                    <button class="incident-btn" data-incident="serviceUnhealthy" data-role-allow="admin">Service Unhealthy</button>
+                    <button class="incident-btn" data-incident="deploymentTimeout" data-role-allow="admin">Deployment Timeout</button>
+                    <button class="incident-btn" data-incident="canaryFailed" data-role-allow="admin">Canary Failed</button>
+                  </div>
+                </div>
+                <div class="incident-block">
+                  <h4>Recovery Actions</h4>
+                  <div class="incident-list">
+                    <button class="incident-btn recovery" data-recovery="terraformDrift" data-role-allow="admin">Clear Terraform Drift</button>
+                    <button class="incident-btn recovery" data-recovery="jenkinsCapacity" data-role-allow="admin">Restore Jenkins Capacity</button>
+                    <button class="incident-btn recovery" data-recovery="serviceHealthy" data-role-allow="admin">Service Healthy Again</button>
+                  </div>
+                </div>
+              </div>
+              <div class="incident-summary" id="incidentSummary">0 incidents active</div>
+            </div>
+
             <div class="panel span-5 stack">
               <div class="panel-head">
                 <div>
-                  <h3>Core Stack</h3>
-                  <p>Operational services and their current posture.</p>
+                  <h3>Core System Status</h3>
+                  <p>Enterprise health cards for infrastructure and monitoring.</p>
                 </div>
-                <span class="tag stable">Stable</span>
+                <span class="tag stable" id="coreState">Stable</span>
               </div>
               <div class="stack-grid">
                 <article class="stack-card">
                   <div class="stack-title">
                     <span>Jenkins</span>
-                    <span class="dot success"></span>
+                    <span class="status-chip success" id="jenkinsStatus">Healthy</span>
                   </div>
-                  <p>Pipeline orchestration with guarded approvals and build caching.</p>
+                  <p id="jenkinsDetail">Build queue and nodes within capacity.</p>
                   <div class="stack-meta">
-                    <span>Last run: 2m ago</span>
-                    <span>Executors: 6/8</span>
+                    <span id="jenkinsExecutors">Executors: 6/8</span>
+                    <span id="jenkinsQueue">Queue: 0</span>
                   </div>
                 </article>
                 <article class="stack-card">
                   <div class="stack-title">
                     <span>Terraform</span>
-                    <span class="dot warn"></span>
+                    <span class="status-chip success" id="terraformStatus">Clean</span>
                   </div>
-                  <p>IaC plan detects 2 drifted resources awaiting review.</p>
+                  <p id="terraformDetail">No drift detected across modules.</p>
                   <div class="stack-meta">
-                    <span>State: locked</span>
-                    <span>Drift: 2 resources</span>
+                    <span id="terraformDrift">Drift: 0 resources</span>
+                    <span id="terraformPlan">Plan: ready</span>
                   </div>
                 </article>
                 <article class="stack-card">
                   <div class="stack-title">
                     <span>Ansible</span>
-                    <span class="dot success"></span>
+                    <span class="status-chip success" id="ansibleStatus">Stable</span>
                   </div>
-                  <p>Rolling deploy across app, worker, and edge fleets.</p>
+                  <p id="ansibleDetail">Playbook success rate holding steady.</p>
                   <div class="stack-meta">
-                    <span>Playbooks: 12</span>
-                    <span>Success: 98%</span>
+                    <span id="ansibleRate">Success: 98%</span>
+                    <span id="ansibleDeploy">Deploys: 12</span>
                   </div>
                 </article>
                 <article class="stack-card">
                   <div class="stack-title">
-                    <span>Prometheus</span>
-                    <span class="dot success"></span>
+                    <span>Monitoring</span>
+                    <span class="status-chip success" id="monitoringStatus">Green</span>
                   </div>
-                  <p>Metrics ingestion from 142 targets across production.</p>
+                  <p id="monitoringDetail">Metrics and alerts within thresholds.</p>
                   <div class="stack-meta">
-                    <span>Scrape: 15s</span>
-                    <span>Targets: 142</span>
-                  </div>
-                </article>
-                <article class="stack-card">
-                  <div class="stack-title">
-                    <span>Grafana</span>
-                    <span class="dot success"></span>
-                  </div>
-                  <p>Live dashboards and alert routing to on-call.</p>
-                  <div class="stack-meta">
-                    <span>Dashboards: 26</span>
-                    <span>Alerts: 3</span>
+                    <span id="monitoringAlerts">Alerts: 3</span>
+                    <span id="monitoringTargets">Targets: 142</span>
                   </div>
                 </article>
               </div>
+            </div>
+
+            <div class="panel span-7 route-health">
+              <div class="panel-head">
+                <div>
+                  <h3>Route Health</h3>
+                  <p>Track navigation, broken routes, and partial failures.</p>
+                </div>
+                <span class="tag stable" id="routeHealthBadge">Healthy</span>
+              </div>
+              <div class="route-grid">
+                <div class="route-item" data-route="services">
+                  <div>
+                    <span class="route-name">Services</span>
+                    <span class="route-meta">/services.html</span>
+                  </div>
+                  <div class="route-actions">
+                    <span class="status-chip success" data-route-status>Healthy</span>
+                    <button class="btn ghost route-toggle" data-route-toggle="services" data-role-allow="admin">Toggle</button>
+                  </div>
+                </div>
+                <div class="route-item" data-route="users">
+                  <div>
+                    <span class="route-name">Users</span>
+                    <span class="route-meta">/users.html</span>
+                  </div>
+                  <div class="route-actions">
+                    <span class="status-chip success" data-route-status>Healthy</span>
+                    <button class="btn ghost route-toggle" data-route-toggle="users" data-role-allow="admin">Toggle</button>
+                  </div>
+                </div>
+                <div class="route-item" data-route="permissions">
+                  <div>
+                    <span class="route-name">Policies</span>
+                    <span class="route-meta">/permissions.html</span>
+                  </div>
+                  <div class="route-actions">
+                    <span class="status-chip success" data-route-status>Healthy</span>
+                    <button class="btn ghost route-toggle" data-route-toggle="permissions" data-role-allow="admin">Toggle</button>
+                  </div>
+                </div>
+                <div class="route-item" data-route="settings">
+                  <div>
+                    <span class="route-name">Settings</span>
+                    <span class="route-meta">/settings.html</span>
+                  </div>
+                  <div class="route-actions">
+                    <span class="status-chip success" data-route-status>Healthy</span>
+                    <button class="btn ghost route-toggle" data-route-toggle="settings" data-role-allow="admin">Toggle</button>
+                  </div>
+                </div>
+              </div>
+              <div class="route-summary" id="routeSummary">0 broken routes</div>
+            </div>
+
+            <div class="panel span-5 windows">
+              <div class="panel-head">
+                <div>
+                  <h3>Time-based Conditions</h3>
+                  <p>Deployment, maintenance, and freeze windows.</p>
+                </div>
+                <span class="tag" id="windowBadge">On Schedule</span>
+              </div>
+              <div class="window-grid">
+                <div class="window-row" data-window="deployment">
+                  <div>
+                    <span class="window-name">Deployment Window</span>
+                    <span class="window-meta">21:00-23:00 UTC</span>
+                  </div>
+                  <div class="window-actions">
+                    <span class="status-chip success" id="deploymentWindowStatus">Open</span>
+                    <button class="btn ghost window-toggle" data-window-toggle="deployment" data-role-allow="admin">Override</button>
+                  </div>
+                </div>
+                <div class="window-row" data-window="maintenance">
+                  <div>
+                    <span class="window-name">Maintenance Window</span>
+                    <span class="window-meta">02:00-03:00 UTC</span>
+                  </div>
+                  <div class="window-actions">
+                    <span class="status-chip warn" id="maintenanceWindowStatus">Inactive</span>
+                    <button class="btn ghost window-toggle" data-window-toggle="maintenance" data-role-allow="admin">Override</button>
+                  </div>
+                </div>
+                <div class="window-row" data-window="freeze">
+                  <div>
+                    <span class="window-name">Freeze Window</span>
+                    <span class="window-meta">Weekends UTC</span>
+                  </div>
+                  <div class="window-actions">
+                    <span class="status-chip warn" id="freezeWindowStatus">Inactive</span>
+                    <button class="btn ghost window-toggle" data-window-toggle="freeze" data-role-allow="admin">Override</button>
+                  </div>
+                </div>
+              </div>
+              <div class="window-note" id="windowNote">Auto schedule in UTC, override for testing.</div>
             </div>
 
             <div class="panel span-7 metrics">
@@ -361,6 +521,12 @@
     </div>
 
     <script src="../assets/app.js" defer></script>
-    <script src="../assets/dashboard.js" defer></script>
+    <script src="../assets/dashboard/context.js" defer></script>
+    <script src="../assets/dashboard/release.js" defer></script>
+    <script src="../assets/dashboard/incidents.js" defer></script>
+    <script src="../assets/dashboard/routes.js" defer></script>
+    <script src="../assets/dashboard/windows.js" defer></script>
+    <script src="../assets/dashboard/metrics.js" defer></script>
+    <script src="../assets/dashboard/init.js" defer></script>
   </body>
 </html>

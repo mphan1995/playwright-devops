@@ -1,6 +1,7 @@
 const ROLE_KEY = "devops-role";
 const SIM_KEY = "devops-sim";
 const LAST_ROUTE_KEY = "devops-last-route";
+const ROUTE_HEALTH_KEY = "devops-route-health";
 
 const roles = ["admin", "operator", "user"];
 const roleLabels = {
@@ -16,6 +17,11 @@ const pageLabels = {
   permissions: "Policies",
   settings: "Settings",
 };
+
+const routeDefaults = Object.keys(pageLabels).reduce((acc, key) => {
+  acc[key] = false;
+  return acc;
+}, {});
 
 let currentRole = "user";
 
@@ -130,6 +136,73 @@ function updatePageHeader() {
   }
 }
 
+function getRouteHealth() {
+  const stored = localStorage.getItem(ROUTE_HEALTH_KEY);
+  if (!stored) {
+    return { ...routeDefaults };
+  }
+  try {
+    const parsed = JSON.parse(stored);
+    return { ...routeDefaults, ...parsed };
+  } catch (error) {
+    return { ...routeDefaults };
+  }
+}
+
+function saveRouteHealth(health) {
+  localStorage.setItem(ROUTE_HEALTH_KEY, JSON.stringify(health));
+  document.dispatchEvent(new CustomEvent("route:health-change", { detail: { health } }));
+}
+
+function setRouteBroken(route, isBroken) {
+  const health = getRouteHealth();
+  if (!(route in health)) return;
+  health[route] = Boolean(isBroken);
+  saveRouteHealth(health);
+}
+
+function getBrokenCount(health) {
+  return Object.values(health).filter(Boolean).length;
+}
+
+function ensureRouteFallback() {
+  const content = document.querySelector(".page-content");
+  if (!content) return null;
+  let fallback = content.querySelector("[data-route-fallback]");
+  if (!fallback) {
+    fallback = document.createElement("div");
+    fallback.className = "route-fallback";
+    fallback.dataset.routeFallback = "true";
+    content.prepend(fallback);
+  }
+  return fallback;
+}
+
+function applyRouteHealth(health = getRouteHealth()) {
+  const page = document.body.dataset.page || "dashboard";
+  const broken = Boolean(health[page]);
+  const sections = Array.from(document.querySelectorAll(".page-content > section"));
+  const fallback = ensureRouteFallback();
+
+  sections.forEach((section) => {
+    section.hidden = broken;
+  });
+
+  if (fallback) {
+    const label = pageLabels[page] || page;
+    fallback.innerHTML = `<h3>${label} temporarily unavailable</h3><p>Route is degraded. Other pages remain online while this area recovers.</p>`;
+    fallback.hidden = !broken;
+  }
+}
+
+function updateRouteIndicator(health = getRouteHealth()) {
+  const brokenCountEl = document.getElementById("navBrokenCount");
+  if (brokenCountEl) {
+    const count = getBrokenCount(health);
+    brokenCountEl.textContent = `${count} broken route${count === 1 ? "" : "s"}`;
+  }
+}
+
 function updateNavigationState() {
   const page = document.body.dataset.page || "dashboard";
   const pageLabel = pageLabels[page] || page;
@@ -150,10 +223,13 @@ function updateNavigationState() {
     lastRouteEl.textContent = lastRoute || pageLabel;
   }
   localStorage.setItem(LAST_ROUTE_KEY, pageLabel);
+  updateRouteIndicator();
 }
 
 function initState() {
   updateSimulationBadge(getSimulationState());
+  applyRouteHealth();
+  updateRouteIndicator();
 }
 
 async function loadComponent(slot) {
@@ -193,6 +269,9 @@ window.devopsApp = {
   setRole,
   getSimulationState,
   setSimulationState,
+  getRouteHealth,
+  setRouteBroken,
+  getBrokenCount: () => getBrokenCount(getRouteHealth()),
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -201,4 +280,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     await Promise.all(slots.map(loadComponent));
   }
   initApp();
+});
+
+document.addEventListener("route:health-change", (event) => {
+  updateRouteIndicator(event.detail?.health);
+  applyRouteHealth(event.detail?.health);
 });
