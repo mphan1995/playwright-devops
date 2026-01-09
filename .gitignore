@@ -26,6 +26,7 @@ reports/
 Thumbs.db
 .vscode/
 .idea/
+ui/
 
 # =========================
 # Python (do NOT use for Playwright)
