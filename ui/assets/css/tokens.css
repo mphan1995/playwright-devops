@@ -1,0 +1,21 @@
+:root {
+  color-scheme: dark;
+  --bg-0: #07090d;
+  --bg-1: #0b111a;
+  --bg-2: #121c2a;
+  --panel: rgba(16, 24, 36, 0.78);
+  --panel-strong: rgba(17, 26, 39, 0.92);
+  --line: rgba(255, 255, 255, 0.08);
+  --text: #e7edf6;
+  --muted: #a9b5c7;
+  --accent: #f6b73c;
+  --accent-2: #47d7c3;
+  --accent-3: #ff6f61;
+  --accent-4: #7e9cff;
+  --shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --font-body: "Space Grotesk", "Helvetica", sans-serif;
+  --font-display: "Bebas Neue", "Oswald", sans-serif;
+}
