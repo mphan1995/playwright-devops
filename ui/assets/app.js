@@ -23,6 +23,7 @@ const routeDefaults = Object.keys(pageLabels).reduce((acc, key) => {
   return acc;
 }, {});
 
+let routeHealthCache = { ...routeDefaults };
 let currentRole = "user";
 
 function getStoredRole() {
@@ -152,21 +153,29 @@ function getCurrentPageKey() {
 }
 
 function getRouteHealth() {
-  const stored = localStorage.getItem(ROUTE_HEALTH_KEY);
-  if (!stored) {
-    return { ...routeDefaults };
-  }
   try {
+    const stored = localStorage.getItem(ROUTE_HEALTH_KEY);
+    if (!stored) {
+      return { ...routeHealthCache };
+    }
     const parsed = JSON.parse(stored);
-    return { ...routeDefaults, ...parsed };
+    routeHealthCache = { ...routeDefaults, ...parsed };
+    return { ...routeHealthCache };
   } catch (error) {
-    return { ...routeDefaults };
+    return { ...routeHealthCache };
   }
 }
 
 function saveRouteHealth(health) {
-  localStorage.setItem(ROUTE_HEALTH_KEY, JSON.stringify(health));
-  document.dispatchEvent(new CustomEvent("route:health-change", { detail: { health } }));
+  routeHealthCache = { ...routeDefaults, ...health };
+  try {
+    localStorage.setItem(ROUTE_HEALTH_KEY, JSON.stringify(routeHealthCache));
+  } catch (error) {
+    // Keep in-memory state if storage is unavailable.
+  }
+  document.dispatchEvent(
+    new CustomEvent("route:health-change", { detail: { health: routeHealthCache } })
+  );
 }
 
 function setRouteBroken(route, isBroken) {
@@ -196,13 +205,23 @@ function ensureRouteFallback() {
 function applyRouteHealth(health = getRouteHealth()) {
   const page = getCurrentPageKey();
   const broken = Boolean(health[page]);
+  const content = document.querySelector(".page-content");
   const sections = Array.from(document.querySelectorAll(".page-content > section"));
-  const fallback = ensureRouteFallback();
+  const existingFallback = content?.querySelector("[data-route-fallback]");
 
   sections.forEach((section) => {
     section.hidden = broken;
   });
 
+  if (!broken) {
+    if (existingFallback) {
+      existingFallback.remove();
+    }
+    updateRouteStatusBadge(health);
+    return;
+  }
+
+  const fallback = existingFallback || ensureRouteFallback();
   if (fallback) {
     const label = pageLabels[page] || page;
     fallback.innerHTML = `
@@ -221,7 +240,7 @@ function applyRouteHealth(health = getRouteHealth()) {
     }
 
     applyRBAC(currentRole);
-    fallback.hidden = !broken;
+    fallback.hidden = false;
   }
 
   updateRouteStatusBadge(health);
