@@ -10,7 +10,6 @@ http.log
 # Playwright artifacts
 playwright-report/
 test-results/
-reports/
 *.zip
 
 # =========================
@@ -27,7 +26,7 @@ reports/
 Thumbs.db
 .vscode/
 .idea/
-ui/
+tests/ui/
 
 # =========================
 # Python (do NOT use for Playwright)
