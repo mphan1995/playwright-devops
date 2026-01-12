@@ -18,7 +18,7 @@ test-results/
 .env
 *.env
 !env/example.env
-
+requirements.txt
 # =========================
 # OS / Editor
 # =========================
@@ -26,7 +26,6 @@ test-results/
 Thumbs.db
 .vscode/
 .idea/
-tests/ui/
 
 # =========================
 # Python (do NOT use for Playwright)

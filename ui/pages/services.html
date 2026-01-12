@@ -94,6 +94,122 @@
               </div>
             </div>
           </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Monitoring &amp; SLO Coverage</h3>
+                <p>Live budget health for availability, latency, and trace coverage.</p>
+              </div>
+              <div class="panel-actions">
+                <span class="tag stable" id="sloStatusBadge">Healthy</span>
+                <button class="btn ghost" id="simulateBudgetBurn">Simulate Budget Burn</button>
+                <button class="btn primary" id="resetSlo">Reset SLO</button>
+              </div>
+            </div>
+            <div class="slo-grid">
+              <div class="slo-card">
+                <div class="slo-title">
+                  <span>Availability</span>
+                  <span class="status-chip success" id="sloAvailabilityStatus">On Target</span>
+                </div>
+                <div class="slo-value" id="sloAvailability">99.95%</div>
+                <div class="slo-meta">Target: 99.9%</div>
+              </div>
+              <div class="slo-card">
+                <div class="slo-title">
+                  <span>P95 Latency</span>
+                  <span class="status-chip success" id="sloLatencyStatus">On Target</span>
+                </div>
+                <div class="slo-value" id="sloLatency">180 ms</div>
+                <div class="slo-meta">Target: &lt; 250 ms</div>
+              </div>
+              <div class="slo-card">
+                <div class="slo-title">
+                  <span>Error Budget</span>
+                  <span class="status-chip success" id="sloBudgetStatus">Healthy</span>
+                </div>
+                <div class="slo-value" id="sloBudget">14%</div>
+                <div class="slo-meta">Minimum: 10%</div>
+              </div>
+              <div class="slo-card">
+                <div class="slo-title">
+                  <span>Trace Coverage</span>
+                  <span class="status-chip success" id="sloTracingStatus">On Target</span>
+                </div>
+                <div class="slo-value" id="sloTracing">96%</div>
+                <div class="slo-meta">Target: 90%</div>
+              </div>
+            </div>
+            <div class="slo-summary" id="sloSummary">Error budget stable across services.</div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>EU Compliance &amp; ISO Standards</h3>
+                <p>Audit readiness for ISO controls and EU data residency.</p>
+              </div>
+              <div class="panel-actions">
+                <button class="btn ghost" id="runIsoAudit">Run ISO Audit</button>
+                <div class="select-control">
+                  <label for="residencySelect">Data Residency</label>
+                  <select id="residencySelect">
+                    <option value="ap-southeast-1">APAC (ap-southeast-1)</option>
+                    <option value="eu-west-1">EU West (eu-west-1)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="compliance-grid">
+              <div class="compliance-card">
+                <div>
+                  <h4>ISO 27001</h4>
+                  <p>ISMS controls verified.</p>
+                </div>
+                <span class="status-chip success" id="iso27001Status">Compliant</span>
+              </div>
+              <div class="compliance-card">
+                <div>
+                  <h4>ISO 27017</h4>
+                  <p>Cloud security safeguards validated.</p>
+                </div>
+                <span class="status-chip success" id="iso27017Status">Compliant</span>
+              </div>
+              <div class="compliance-card">
+                <div>
+                  <h4>ISO 9001</h4>
+                  <p>Quality management audits passed.</p>
+                </div>
+                <span class="status-chip success" id="iso9001Status">Compliant</span>
+              </div>
+              <div class="compliance-card">
+                <div>
+                  <h4>ISO 22301</h4>
+                  <p>Business continuity review.</p>
+                </div>
+                <span class="status-chip warn" id="iso22301Status">Review</span>
+              </div>
+              <div class="compliance-card">
+                <div>
+                  <h4>GDPR</h4>
+                  <p>Data protection controls aligned.</p>
+                </div>
+                <span class="status-chip success" id="gdprStatus">Compliant</span>
+              </div>
+              <div class="compliance-card">
+                <div>
+                  <h4>NIS2</h4>
+                  <p>Critical infrastructure mapping.</p>
+                </div>
+                <span class="status-chip warn" id="nis2Status">Review</span>
+              </div>
+            </div>
+            <div class="compliance-summary">
+              <span id="residencyBadge">Residency: APAC</span>
+              <span id="isoSummary">Audit review in progress.</span>
+            </div>
+          </section>
         </main>
       </div>
     </div>
