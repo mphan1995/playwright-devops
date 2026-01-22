@@ -27,13 +27,14 @@ export const storageKeys = {
 
 export function roleLabel(role: string) {
   if (role === "admin") return "Admin";
-  if (role === "operator") return "Operator";
+  if (role === "moderator") return "Moderator";
   return "User";
 }
 
 export async function waitForApp(page: Page) {
   await page.waitForSelector(".sidebar-nav");
   await page.waitForSelector("#pageTitle");
+  await page.waitForFunction(() => Boolean(window.devopsApp) && document.documentElement.dataset.role);
 }
 
 export async function gotoPage(page: Page, path: string) {
@@ -54,7 +55,11 @@ export async function gotoPageWithStorage(page: Page, path: string, storage: Rec
   await waitForApp(page);
 }
 
-export async function setRole(page: Page, role: "admin" | "operator" | "user") {
-  await page.locator("#roleSelect").selectOption(role);
+export async function setRole(page: Page, role: "admin" | "moderator" | "user") {
+  await page.waitForFunction(() => Boolean(window.devopsApp?.setRole));
+  await page.evaluate((targetRole) => {
+    window.devopsApp.setRole(targetRole);
+  }, role);
+  await page.waitForFunction((targetRole) => document.documentElement.dataset.role === targetRole, role);
   await expect(page.locator("#roleBadge")).toHaveText(roleLabel(role));
 }
