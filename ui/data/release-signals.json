@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-01-22T08:30:18.524Z",
+  "ui": {
+    "source": "test-results/ui/ui-results.json",
+    "summary": {
+      "status": "pass",
+      "label": "Pass",
+      "totals": {
+        "total": 25,
+        "passed": 25,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0
+      },
+      "durationMs": 90766.59999999999
+    }
+  },
+  "performance": {
+    "source": "test-results/performance/perf-results.json",
+    "summary": {
+      "status": "pass",
+      "label": "Pass",
+      "scenarios": {
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
+      "highlights": {
+        "avgMs": 42.61,
+        "p95Ms": 58.83,
+        "rps": 87.2,
+        "errorRate": 0
+      }
+    },
+    "scenarios": [
+      {
+        "name": "dashboard",
+        "path": "/pages/index.html",
+        "status": "pass",
+        "metrics": {
+          "avgMs": 20.11,
+          "p95Ms": 27.79,
+          "rps": 178.95,
+          "errorRate": 0
+        }
+      },
+      {
+        "name": "services",
+        "path": "/pages/services.html",
+        "status": "pass",
+        "metrics": {
+          "avgMs": 24.65,
+          "p95Ms": 34.84,
+          "rps": 152.08,
+          "errorRate": 0
+        }
+      },
+      {
+        "name": "users",
+        "path": "/pages/users.html",
+        "status": "pass",
+        "metrics": {
+          "avgMs": 22.04,
+          "p95Ms": 47.91,
+          "rps": 162.68,
+          "errorRate": 0
+        }
+      },
+      {
+        "name": "permissions",
+        "path": "/pages/permissions.html",
+        "status": "pass",
+        "metrics": {
+          "avgMs": 29.55,
+          "p95Ms": 44.64,
+          "rps": 127.79,
+          "errorRate": 0
+        }
+      },
+      {
+        "name": "settings",
+        "path": "/pages/settings.html",
+        "status": "pass",
+        "metrics": {
+          "avgMs": 42.61,
+          "p95Ms": 58.83,
+          "rps": 87.2,
+          "errorRate": 0
+        }
+      }
+    ]
+  }
+}
