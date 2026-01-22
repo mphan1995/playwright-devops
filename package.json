@@ -8,8 +8,9 @@
     "test:ui": "playwright test",
     "test:perf": "node tests/performance/run-performance.js",
     "test:perf:baseline": "node tests/performance/run-performance.js --update-baseline",
-    "serve": "http-server ui -p 8080",
-    "ci": "npm run test:ui && npm run test:perf"
+    "test:signals": "node scripts/build-release-signals.js",
+    "serve": "node scripts/serve.js",
+    "ci": "npm run test:ui && npm run test:perf && npm run test:signals"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,10 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+  reporter: [
+    ['list'],
+    ['json', { outputFile: 'test-results/ui/ui-results.json' }],
+  ],
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:8080',
   },
