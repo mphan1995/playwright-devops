@@ -3,11 +3,14 @@ const SIM_KEY = "devops-sim";
 const LAST_ROUTE_KEY = "devops-last-route";
 const ROUTE_HEALTH_KEY = "devops-route-health";
 
-const roles = ["admin", "operator", "user"];
+const roles = ["admin", "moderator", "user"];
 const roleLabels = {
   admin: "Admin",
-  operator: "Operator",
+  moderator: "Moderator",
   user: "User",
+};
+const roleAliases = {
+  operator: "moderator",
 };
 
 const pageLabels = {
@@ -26,13 +29,17 @@ const routeDefaults = Object.keys(pageLabels).reduce((acc, key) => {
 let routeHealthCache = { ...routeDefaults };
 let currentRole = "user";
 
+function normalizeRole(role) {
+  return roleAliases[role] || role;
+}
+
 function getStoredRole() {
-  const stored = localStorage.getItem(ROLE_KEY);
+  const stored = normalizeRole(localStorage.getItem(ROLE_KEY));
   return roles.includes(stored) ? stored : "user";
 }
 
 function setStoredRole(role) {
-  localStorage.setItem(ROLE_KEY, role);
+  localStorage.setItem(ROLE_KEY, normalizeRole(role));
 }
 
 function getSimulationState() {
@@ -106,11 +113,12 @@ function applyRole(role) {
 }
 
 function setRole(role, { persist = true } = {}) {
-  if (!roles.includes(role)) return;
+  const normalized = normalizeRole(role);
+  if (!roles.includes(normalized)) return;
   if (persist) {
-    setStoredRole(role);
+    setStoredRole(normalized);
   }
-  applyRole(role);
+  applyRole(normalized);
 }
 
 function initRoleSelector() {

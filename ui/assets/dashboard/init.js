@@ -83,7 +83,7 @@
   dashboard.release.updateControlState();
   dashboard.release.applyReleaseConstraints();
   dashboard.metrics.updateMetrics();
-  dashboard.metrics.updateQaMetrics();
+  dashboard.signals?.loadSignals?.();
 
   if (state.releaseState === "running") {
     dashboard.release.syncPipeline();
@@ -99,6 +99,5 @@
 
   setInterval(dashboard.release.advancePipeline, 4200);
   setInterval(dashboard.metrics.updateMetrics, 2000);
-  setInterval(dashboard.metrics.updateQaMetrics, 4200);
   setInterval(dashboard.windows.updateWindowUI, 60000);
 })();

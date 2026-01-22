@@ -27,8 +27,18 @@
     qaPassedEl: document.getElementById("qaPassed"),
     qaFailedEl: document.getElementById("qaFailed"),
     qaFlakyEl: document.getElementById("qaFlaky"),
+    qaSkippedEl: document.getElementById("qaSkipped"),
     qaDurationEl: document.getElementById("qaDuration"),
-    qaCoverageEl: document.getElementById("qaCoverage"),
+    uiSummaryMetaEl: document.getElementById("uiSummaryMeta"),
+    perfStateEl: document.getElementById("perfState"),
+    perfSummaryMetaEl: document.getElementById("perfSummaryMeta"),
+    perfScenarioTotalEl: document.getElementById("perfScenarioTotal"),
+    perfScenarioFailedEl: document.getElementById("perfScenarioFailed"),
+    perfWorstAvgEl: document.getElementById("perfWorstAvg"),
+    perfWorstP95El: document.getElementById("perfWorstP95"),
+    perfMinRpsEl: document.getElementById("perfMinRps"),
+    perfErrorRateEl: document.getElementById("perfErrorRate"),
+    signalFooterEl: document.getElementById("signalFooter"),
     triggerRunBtn: document.getElementById("triggerRun"),
     pauseReleaseBtn: document.getElementById("pauseRelease"),
     resumeReleaseBtn: document.getElementById("resumeRelease"),
@@ -240,7 +250,7 @@
     const entry = document.createElement("li");
     entry.textContent = `[${timestamp}] ${message}`;
     dom.logList.prepend(entry);
-    while (dom.logList.children.length > 8) {
+    while (dom.logList.children.length > 12) {
       dom.logList.removeChild(dom.logList.lastChild);
     }
   }
@@ -258,14 +268,6 @@
       reqRate: 1240,
       errRate: 0.62,
       latency: 240,
-    },
-    qaState: {
-      total: 128,
-      passed: 126,
-      failed: 2,
-      flaky: 1,
-      duration: 192,
-      coverage: 82,
     },
   };
 

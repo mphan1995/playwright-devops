@@ -327,10 +327,13 @@
 .log-list {
   list-style: none;
   display: grid;
-  gap: 8px;
+  gap: 4px;
   font-family: "JetBrains Mono", "SFMono-Regular", monospace;
   font-size: 0.85rem;
   color: var(--muted);
+  line-height: 1.4;
+  margin: 0;
+  padding: 0;
 }
 
 .qa-grid {
@@ -362,4 +365,43 @@
   margin-top: 14px;
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.signal-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.signal-block + .signal-block {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.signal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.signal-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.signal-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.trace-list {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  font-family: "JetBrains Mono", "SFMono-Regular", monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+  margin: 12px 0 0;
+  padding: 0;
 }

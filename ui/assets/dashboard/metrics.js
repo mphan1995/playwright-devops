@@ -18,12 +18,6 @@
     dom.alertStateEl.className = `tag ${className}`.trim();
   }
 
-  function updateQaState(label, className) {
-    if (!dom.qaStateEl) return;
-    dom.qaStateEl.textContent = label;
-    dom.qaStateEl.className = `tag ${className}`.trim();
-  }
-
   function updateMetrics() {
     state.metricState.reqRate = utils.clamp(state.metricState.reqRate + utils.randomBetween(-60, 80), 980, 1600);
     state.metricState.errRate = utils.clamp(state.metricState.errRate + utils.randomBetween(-0.08, 0.1), 0.2, 1.6);
@@ -45,29 +39,6 @@
       updateAlertState("Attention", "warn");
     } else {
       updateAlertState("All Clear", "");
-    }
-  }
-
-  function updateQaMetrics() {
-    state.qaState.duration = utils.clamp(state.qaState.duration + utils.randomBetween(-5, 6), 160, 260);
-    state.qaState.coverage = utils.clamp(state.qaState.coverage + utils.randomBetween(-1, 1.2), 80, 90);
-
-    if (dom.qaDurationEl) {
-      dom.qaDurationEl.textContent = `${Math.floor(state.qaState.duration / 60)}m ${Math.round(
-        state.qaState.duration % 60
-      )}s`;
-    }
-    if (dom.qaCoverageEl) dom.qaCoverageEl.textContent = `${Math.round(state.qaState.coverage)}%`;
-    if (dom.qaTotalEl) dom.qaTotalEl.textContent = String(state.qaState.total);
-    if (dom.qaPassedEl) dom.qaPassedEl.textContent = String(state.qaState.passed);
-    if (dom.qaFailedEl) dom.qaFailedEl.textContent = String(state.qaState.failed);
-    if (dom.qaFlakyEl) dom.qaFlakyEl.textContent = String(state.qaState.flaky);
-
-    const passRate = state.qaState.passed / state.qaState.total;
-    if (passRate < 0.95 || state.qaState.failed > 3) {
-      updateQaState("Risk", "warn");
-    } else {
-      updateQaState("Green", "");
     }
   }
 
@@ -118,7 +89,6 @@
 
   dashboard.metrics = {
     updateMetrics,
-    updateQaMetrics,
     drawAllSparklines,
   };
 })();

@@ -261,7 +261,7 @@
 
   function handleResume() {
     const role = getRole();
-    if (!["admin", "operator"].includes(role)) return;
+    if (!["admin", "moderator"].includes(role)) return;
 
     const criticalReason = getCriticalReason();
     if (criticalReason) {
