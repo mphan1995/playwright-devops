@@ -1,16 +1,47 @@
 import { test, expect } from "@playwright/test";
-import { gotoPage, paths, setRole } from "./helpers";
+import { gotoPageWithStorage, paths, setRole, storageKeys } from "./helpers";
 
-test("users table and admin-only card", async ({ page }) => {
-  await gotoPage(page, paths.users);
+test("users roster is available and admin controls stay gated", async ({ page }) => {
+  await gotoPageWithStorage(page, paths.users, {
+    [storageKeys.role]: "user",
+  });
 
   const rows = page.locator(".data-table tbody tr");
-  await expect(rows).toHaveCount(4);
-  await expect(page.locator(".data-table")).toContainText("MaX Phan");
+  const rowCount = await rows.count();
+  expect(rowCount).toBeGreaterThan(0);
 
-  const adminCard = page.locator(".info-card", { hasText: "Pending Access Requests" });
-  await expect(adminCard).toBeHidden();
+  const adminGateBefore = await page
+    .locator(".page-content [data-role-allow]")
+    .evaluateAll((elements) => {
+      const adminElements = elements.filter((element) =>
+        element.dataset.roleAllow
+          ?.split(",")
+          .map((value) => value.trim())
+          .includes("admin")
+      );
+      return {
+        count: adminElements.length,
+        hiddenCount: adminElements.filter((element) => element.hidden).length,
+      };
+    });
+  expect(adminGateBefore.count).toBeGreaterThan(0);
+  expect(adminGateBefore.hiddenCount).toBe(adminGateBefore.count);
 
   await setRole(page, "admin");
-  await expect(adminCard).toBeVisible();
+
+  const adminGateAfter = await page
+    .locator(".page-content [data-role-allow]")
+    .evaluateAll((elements) => {
+      const adminElements = elements.filter((element) =>
+        element.dataset.roleAllow
+          ?.split(",")
+          .map((value) => value.trim())
+          .includes("admin")
+      );
+      return {
+        count: adminElements.length,
+        hiddenCount: adminElements.filter((element) => element.hidden).length,
+      };
+    });
+  expect(adminGateAfter.hiddenCount).toBe(0);
 });

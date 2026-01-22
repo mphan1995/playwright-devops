@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2025-01-01T00:00:00Z",
+  "baseUrl": "http://localhost:8080",
+  "scenarios": {
+    "dashboard": { "avgMs": 400, "p95Ms": 1200, "rps": 6, "errorRate": 0.01 },
+    "services": { "avgMs": 400, "p95Ms": 1200, "rps": 6, "errorRate": 0.01 },
+    "users": { "avgMs": 400, "p95Ms": 1200, "rps": 6, "errorRate": 0.01 },
+    "permissions": { "avgMs": 400, "p95Ms": 1200, "rps": 6, "errorRate": 0.01 },
+    "settings": { "avgMs": 400, "p95Ms": 1200, "rps": 6, "errorRate": 0.01 }
+  }
+}

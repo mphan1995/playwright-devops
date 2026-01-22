@@ -1,0 +1,15 @@
+{
+  "defaults": {
+    "iterations": 20,
+    "concurrency": 4,
+    "warmup": 4,
+    "method": "GET"
+  },
+  "scenarios": [
+    { "name": "dashboard", "path": "/pages/index.html" },
+    { "name": "services", "path": "/pages/services.html" },
+    { "name": "users", "path": "/pages/users.html" },
+    { "name": "permissions", "path": "/pages/permissions.html" },
+    { "name": "settings", "path": "/pages/settings.html" }
+  ]
+}
