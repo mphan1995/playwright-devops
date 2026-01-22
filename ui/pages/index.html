@@ -6,7 +6,12 @@
     <title>Decision and Control Plan</title>
     <link rel="stylesheet" href="../assets/style.css" />
   </head>
-  <body data-page="dashboard" data-page-title="Dashboard" data-page-subtitle="Production release control for Playwright CI/CD.">
+  <body
+    data-page="dashboard"
+    data-page-title="Dashboard"
+    data-page-subtitle="Production release control for Playwright CI/CD."
+    data-signals-src="../data/release-signals.json"
+  >
     <div class="atmosphere">
       <span class="orb orb-1"></span>
       <span class="orb orb-2"></span>
@@ -54,7 +59,7 @@
                 <span class="rbac-title">RBAC Rules</span>
                 <ul>
                   <li>Admin: trigger, pause, approve, rollback, resume</li>
-                  <li>Operator: resume, observe</li>
+                  <li>Moderator: resume paused release, observe</li>
                   <li>User: read-only</li>
                 </ul>
               </div>
@@ -174,7 +179,7 @@
               <div class="control-grid">
                 <button class="btn primary" id="triggerRun" data-role-allow="admin">Trigger Release</button>
                 <button class="btn ghost" id="pauseRelease" data-role-allow="admin">Pause</button>
-                <button class="btn ghost" id="resumeRelease" data-role-allow="admin,operator">Resume</button>
+                <button class="btn ghost" id="resumeRelease" data-role-allow="admin,moderator">Resume</button>
                 <button class="btn ghost" id="approveRelease" data-role-allow="admin">Approve</button>
                 <button class="btn ghost" id="rejectRelease" data-role-allow="admin">Reject</button>
                 <button class="btn danger" id="rollbackRelease" data-role-allow="admin">Rollback</button>
@@ -460,6 +465,89 @@
               </div>
             </div>
 
+            <div class="panel span-7 db">
+              <div class="panel-head">
+                <div>
+                  <h3>Database Telemetry</h3>
+                  <p>Connection pools, replication lag, and query health.</p>
+                </div>
+                <span class="tag stable">Stable</span>
+              </div>
+              <div class="qa-grid">
+                <div class="qa-card">
+                  <span class="qa-label">Primary</span>
+                  <span class="qa-value">postgres-prod-01</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">Replicas</span>
+                  <span class="qa-value">2 healthy</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">Pool Saturation</span>
+                  <span class="qa-value">68%</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">P95 Query</span>
+                  <span class="qa-value">22 ms</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">Replication Lag</span>
+                  <span class="qa-value">1.4 s</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">Deadlocks</span>
+                  <span class="qa-value">0</span>
+                </div>
+              </div>
+              <div class="note-strip">
+                <span>Failover: standby-ready</span>
+                <span>Backups: 15m RPO</span>
+                <span>Retention: 30d</span>
+              </div>
+            </div>
+
+            <div class="panel span-5 traces">
+              <div class="panel-head">
+                <div>
+                  <h3>Trace Signals</h3>
+                  <p>Distributed tracing snapshots for release validation.</p>
+                </div>
+                <span class="tag">Sampling 12%</span>
+              </div>
+              <div class="qa-grid">
+                <div class="qa-card">
+                  <span class="qa-label">Span Error Rate</span>
+                  <span class="qa-value">0.6%</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">P99 Span</span>
+                  <span class="qa-value">480 ms</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">Trace Backlog</span>
+                  <span class="qa-value">42</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">DB Span Share</span>
+                  <span class="qa-value">31%</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">Top Service</span>
+                  <span class="qa-value">api-gateway</span>
+                </div>
+                <div class="qa-card">
+                  <span class="qa-label">Trace Budget</span>
+                  <span class="qa-value">Healthy</span>
+                </div>
+              </div>
+              <ul class="trace-list">
+                <li>[trace] /checkout 420ms: api-gateway → payments → postgres</li>
+                <li>[trace] /deploy 310ms: pipeline → ansible → config-store</li>
+                <li>[trace] /login 180ms: edge → auth → redis</li>
+                <li>[trace] /health 90ms: mesh → services → prometheus</li>
+              </ul>
+            </div>
+
             <div class="panel span-7 logs">
               <div class="panel-head">
                 <div>
@@ -470,50 +558,99 @@
               </div>
               <ul class="log-list" id="logList">
                 <li>[21:12:04] Release REL-2406 queued by Jenkins pipeline.</li>
+                <li>[21:12:18] CI signal snapshot pulled into release board.</li>
                 <li>[21:12:42] Build artifact created and pushed to registry.</li>
+                <li>[21:13:05] Schema drift check passed for primary database.</li>
                 <li>[21:13:10] Playwright unit tests started for API suite.</li>
+                <li>[21:13:22] Replica lag steady at 1.4s across read replicas.</li>
+                <li>[21:13:40] Trace sampling stable at 12% for checkout flow.</li>
                 <li>[21:13:55] Terraform plan generated with 2 changes pending review.</li>
+                <li>[21:14:06] Canary checks queued for region ap-southeast-1.</li>
                 <li>[21:14:22] Grafana dashboards refreshed for release watch.</li>
+                <li>[21:14:40] Cache hit rate stabilized at 96% for edge tier.</li>
+                <li>[21:15:02] Release approvals pending: 0/2 confirmed.</li>
+                <li>[21:15:20] Error budget steady, no active incidents.</li>
               </ul>
             </div>
 
             <div class="panel span-5 qa">
               <div class="panel-head">
                 <div>
-                  <h3>Quality Gate</h3>
-                  <p>Playwright test health for the active release.</p>
+                  <h3>Release Signals</h3>
+                  <p>Read-only test health and performance gates from CI.</p>
                 </div>
-                <span class="tag" id="qaState">Green</span>
-              </div>
-              <div class="qa-grid">
-                <div class="qa-card">
-                  <span class="qa-label">Total Tests</span>
-                  <span class="qa-value" id="qaTotal">128</span>
-                </div>
-                <div class="qa-card">
-                  <span class="qa-label">Passed</span>
-                  <span class="qa-value" id="qaPassed">126</span>
-                </div>
-                <div class="qa-card">
-                  <span class="qa-label">Failed</span>
-                  <span class="qa-value" id="qaFailed">2</span>
-                </div>
-                <div class="qa-card">
-                  <span class="qa-label">Flaky</span>
-                  <span class="qa-value" id="qaFlaky">1</span>
-                </div>
-                <div class="qa-card">
-                  <span class="qa-label">Duration</span>
-                  <span class="qa-value" id="qaDuration">3m 12s</span>
-                </div>
-                <div class="qa-card">
-                  <span class="qa-label">Coverage</span>
-                  <span class="qa-value" id="qaCoverage">82%</span>
+                <div class="panel-actions">
+                  <span class="tag" id="qaState">UI: No Data</span>
+                  <span class="tag" id="perfState">Perf: No Data</span>
                 </div>
               </div>
-              <div class="qa-footer">
-                <span>Quality gate: 95% pass rate required</span>
+              <div class="signal-stack">
+                <div class="signal-block">
+                  <div class="signal-head">
+                    <span class="signal-title">UI Test Health</span>
+                    <span class="signal-meta" id="uiSummaryMeta">Updated: N/A</span>
+                  </div>
+                  <div class="qa-grid">
+                    <div class="qa-card">
+                      <span class="qa-label">Total Tests</span>
+                      <span class="qa-value" id="qaTotal">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Passed</span>
+                      <span class="qa-value" id="qaPassed">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Failed</span>
+                      <span class="qa-value" id="qaFailed">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Skipped</span>
+                      <span class="qa-value" id="qaSkipped">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Flaky</span>
+                      <span class="qa-value" id="qaFlaky">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Duration</span>
+                      <span class="qa-value" id="qaDuration">N/A</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="signal-block">
+                  <div class="signal-head">
+                    <span class="signal-title">Performance Regression</span>
+                    <span class="signal-meta" id="perfSummaryMeta">Updated: N/A</span>
+                  </div>
+                  <div class="qa-grid">
+                    <div class="qa-card">
+                      <span class="qa-label">Scenarios</span>
+                      <span class="qa-value" id="perfScenarioTotal">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Failed</span>
+                      <span class="qa-value" id="perfScenarioFailed">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Worst Avg</span>
+                      <span class="qa-value" id="perfWorstAvg">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Worst P95</span>
+                      <span class="qa-value" id="perfWorstP95">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Min RPS</span>
+                      <span class="qa-value" id="perfMinRps">N/A</span>
+                    </div>
+                    <div class="qa-card">
+                      <span class="qa-label">Max Error</span>
+                      <span class="qa-value" id="perfErrorRate">N/A</span>
+                    </div>
+                  </div>
+                </div>
               </div>
+              <div class="qa-footer" id="signalFooter">Signals updated: N/A</div>
             </div>
           </section>
         </main>
@@ -527,6 +664,7 @@
     <script src="../assets/dashboard/routes.js" defer></script>
     <script src="../assets/dashboard/windows.js" defer></script>
     <script src="../assets/dashboard/metrics.js" defer></script>
+    <script src="../assets/dashboard/signals.js" defer></script>
     <script src="../assets/dashboard/init.js" defer></script>
   </body>
 </html>

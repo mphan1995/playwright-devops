@@ -71,6 +71,46 @@
           <section class="panel">
             <div class="panel-head">
               <div>
+                <h3>Database Dependencies</h3>
+                <p>Storage tier health and saturation for release-critical systems.</p>
+              </div>
+              <span class="tag stable">Stable</span>
+            </div>
+            <div class="qa-grid">
+              <div class="qa-card">
+                <span class="qa-label">Primary Cluster</span>
+                <span class="qa-value">Online</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Replica Lag</span>
+                <span class="qa-value">1.4 s</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Connection Saturation</span>
+                <span class="qa-value">68%</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">P95 Query</span>
+                <span class="qa-value">22 ms</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Cache Hit Rate</span>
+                <span class="qa-value">96%</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Write Errors</span>
+                <span class="qa-value">0.02%</span>
+              </div>
+            </div>
+            <div class="note-strip">
+              <span>Failover: ready</span>
+              <span>Backups: every 15m</span>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
                 <h3>Blast Radius and Isolation</h3>
                 <p>Failure domains are scoped to avoid total outage.</p>
               </div>

@@ -58,9 +58,9 @@
                     <td>Plan + apply</td>
                     <td>Alert routing, dashboard edits</td>
                   </tr>
-                  <tr data-role-row="operator">
-                    <td>Operator</td>
-                    <td>Resume only, view logs</td>
+                  <tr data-role-row="moderator">
+                    <td>Moderator</td>
+                    <td>Resume paused release, view logs</td>
                     <td>Plan only</td>
                     <td>View dashboards</td>
                   </tr>
@@ -80,7 +80,7 @@
               <h4>Policy Checks</h4>
               <ul>
                 <li>Terraform apply requires Admin approval</li>
-                <li>Operator can only resume paused releases</li>
+                <li>Moderator can only resume paused releases</li>
                 <li>User roles cannot trigger new releases</li>
               </ul>
             </div>
@@ -88,8 +88,48 @@
               <h4>Pending Policy Updates</h4>
               <ul>
                 <li>New gating rule for staging smoke tests</li>
-                <li>Mandatory canary window before full rollout</li>
+                <li>Moderator access for staged approvals</li>
               </ul>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Guardrail Coverage</h3>
+                <p>Live enforcement snapshot across release policies.</p>
+              </div>
+              <span class="tag stable">Aligned</span>
+            </div>
+            <div class="qa-grid">
+              <div class="qa-card">
+                <span class="qa-label">Policy Rules</span>
+                <span class="qa-value">42</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Active Gates</span>
+                <span class="qa-value">9</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Exceptions</span>
+                <span class="qa-value">1</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Audit Drift</span>
+                <span class="qa-value">0</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Change Windows</span>
+                <span class="qa-value">Locked</span>
+              </div>
+              <div class="qa-card">
+                <span class="qa-label">Approval Chains</span>
+                <span class="qa-value">Active</span>
+              </div>
+            </div>
+            <div class="note-strip">
+              <span>Last policy sync: 8m ago</span>
+              <span>Next review: Fri 18:00 UTC</span>
             </div>
           </section>
         </main>
