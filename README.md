@@ -1,39 +1,36 @@
 # Playwright DevOps Flight Deck
 
-A static DevOps release-control UI plus Playwright suites focused on reliability, RBAC, and release safety.
+Static release signal board with UI and performance checks for CI/CD release confidence.
 
-## Tests
-- `tests/ui`: release workflow and RBAC behavior checks.
-- `tests/auth`: login flow coverage.
-- `tests/performance`: CI-friendly latency, error rate, and throughput smoke checks.
-
-## Run
+## Generate signals
 ```bash
 npm install
 npx playwright install
 npm run test:ui
 npm run test:perf
+npm run test:signals
 ```
 
-Update the perf baseline when the environment is stable:
-```bash
-npm run test:perf:baseline
-```
+`npm run ci` or `scripts/run-ci.sh` runs all three in order.
 
-View the UI locally:
+## Dashboard binding
+- The dashboard reads `ui/data/release-signals.json`.
+- `scripts/build-release-signals.js` normalizes raw results from `test-results/ui/ui-results.json` and
+  `test-results/performance/perf-results.json` into `test-results/summary/release-signals.json`.
+- Archive `test-results/summary/release-signals.json` to replay signal history in the UI.
+- All pass/fail decisions live in CI; the UI only renders the summary.
+
+## Signal contract
+- `ui.summary`: `status`, `label`, `totals` (total, passed, failed, skipped, flaky), `durationMs`.
+- `performance.summary`: `status`, `label`, `scenarios` (total, passed, failed, skipped), `highlights` (avgMs, p95Ms, rps, errorRate).
+- Units: `durationMs`, `avgMs`, `p95Ms` are ms; `errorRate` is a 0-1 ratio.
+
+## Performance baselines
+- `npm run test:perf:baseline` updates `tests/performance/baseline.json`.
+- Guardrails: `PERF_REGRESSION_LIMIT`, `PERF_ERROR_BUDGET`.
+
+## Run the UI
 ```bash
 npm run serve
 ```
-Then open `http://localhost:8080/pages/index.html`.
-
-## Performance In CI/CD
-- `npm run ci` or `scripts/run-ci.sh` runs UI + perf suites.
-- The perf runner starts a local server unless `PERF_SKIP_SERVER=1`; set `BASE_URL` to target another env.
-- Baselines live in `tests/performance/baseline.json` with regression guardrails via `PERF_REGRESSION_LIMIT` and `PERF_ERROR_BUDGET`.
-- Results are written to `test-results/performance/perf-results.json`.
-
-## Layout
-- `ui/pages`: dashboard, service health, users, policies, settings.
-- `ui/components`: shared nav and header.
-- `ui/assets`: app state and styling.
-- `tests`: Playwright suites.
+Open `http://localhost:8080/pages/index.html`.
