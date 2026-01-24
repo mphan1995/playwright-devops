@@ -3,8 +3,7 @@ const path = require("path");
 const { spawn } = require("child_process");
 
 const rootDir = path.resolve(__dirname, "..");
-const basePort = Number(process.env.PORT) || 8080;
-const maxTries = 10;
+const port = 8080;
 
 function isPortFree(port) {
   return new Promise((resolve) => {
@@ -21,20 +20,10 @@ function isPortFree(port) {
   });
 }
 
-async function pickPort(startPort, tries) {
-  for (let i = 0; i < tries; i += 1) {
-    const port = startPort + i;
-    if (await isPortFree(port)) {
-      return port;
-    }
-  }
-  return null;
-}
-
 async function main() {
-  const port = await pickPort(basePort, maxTries);
-  if (!port) {
-    console.error(`No free port found from ${basePort} to ${basePort + maxTries - 1}.`);
+  const free = await isPortFree(port);
+  if (!free) {
+    console.error(`Port ${port} is already in use. Stop the other service first.`);
     process.exit(1);
   }
 
