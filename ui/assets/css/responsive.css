@@ -69,4 +69,14 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .kube-status,
+  .kube-hpa,
+  .kube-toggle,
+  .lab-row,
+  .lab-toggle-row,
+  .iac-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
