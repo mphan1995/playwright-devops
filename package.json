@@ -9,6 +9,8 @@
     "test:perf": "node tests/performance/run-performance.js",
     "test:perf:baseline": "node tests/performance/run-performance.js --update-baseline",
     "test:signals": "node scripts/build-release-signals.js",
+    "signals:watch": "node scripts/watch-signals.js",
+    "perf:watch": "node scripts/watch-perf.js",
     "serve": "node scripts/serve.js",
     "ci": "npm run test:ui && npm run test:perf && npm run test:signals"
   },
