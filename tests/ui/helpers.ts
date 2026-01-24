@@ -20,9 +20,33 @@ export const storageKeys = {
   commit: "devops-commit",
   step: "devops-step",
   servicesFail: "devops-services-fail",
+  perfRegression: "devops-perf-regression",
   iso: "devops-iso",
   residency: "devops-residency",
   slo: "devops-slo",
+  kube: "devops-kube",
+  iac: "devops-iac",
+  labs: "devops-labs",
+  metricsSession: "devops-metrics-session",
+};
+
+export const defaultKubeState = {
+  controlPlaneDegraded: false,
+  upgradePlanned: false,
+  autoscaler: true,
+  pdb: true,
+  hpaReplicas: 6,
+  pools: {
+    core: { desired: 6, ready: 6, cpu: 58, memory: 62, mode: "On-demand" },
+    edge: { desired: 4, ready: 4, cpu: 44, memory: 48, mode: "Spot" },
+    batch: { desired: 3, ready: 3, cpu: 38, memory: 40, mode: "Spot" },
+  },
+};
+
+export const defaultIacState = {
+  stage: "idle",
+  locked: false,
+  lastApplied: null,
 };
 
 export function roleLabel(role: string) {
@@ -32,8 +56,7 @@ export function roleLabel(role: string) {
 }
 
 export async function waitForApp(page: Page) {
-  await page.waitForSelector(".sidebar-nav");
-  await page.waitForSelector("#pageTitle");
+  await page.waitForFunction(() => document.body?.dataset.componentsLoaded === "true");
   await page.waitForFunction(() => Boolean(window.devopsApp) && document.documentElement.dataset.role);
 }
 
