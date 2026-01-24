@@ -1,15 +1,18 @@
 {
   "defaults": {
-    "iterations": 20,
+    "iterations": 24,
     "concurrency": 4,
-    "warmup": 4,
+    "warmup": 5,
     "method": "GET"
   },
   "scenarios": [
     { "name": "dashboard", "path": "/pages/index.html" },
+    { "name": "dashboard-admin", "path": "/pages/index.html?role=admin", "iterations": 30, "concurrency": 6 },
     { "name": "services", "path": "/pages/services.html" },
+    { "name": "services-failover", "path": "/pages/services.html?fail=1", "iterations": 26, "concurrency": 5 },
     { "name": "users", "path": "/pages/users.html" },
     { "name": "permissions", "path": "/pages/permissions.html" },
-    { "name": "settings", "path": "/pages/settings.html" }
+    { "name": "settings", "path": "/pages/settings.html" },
+    { "name": "settings-admin", "path": "/pages/settings.html?role=admin", "iterations": 26, "concurrency": 5 }
   ]
 }
