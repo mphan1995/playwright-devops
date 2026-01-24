@@ -5,77 +5,84 @@
 
   const dashboard = (window.devopsDashboard = window.devopsDashboard || {});
 
-  const dom = {
-    stepEls: Array.from(document.querySelectorAll(".step")),
-    stateItems: Array.from(document.querySelectorAll(".state-item")),
-    incidentButtons: Array.from(document.querySelectorAll("[data-incident]")),
-    recoveryButtons: Array.from(document.querySelectorAll("[data-recovery]")),
-    routeItems: Array.from(document.querySelectorAll(".route-item")),
-    routeToggleButtons: Array.from(document.querySelectorAll("[data-route-toggle]")),
-    windowToggleButtons: Array.from(document.querySelectorAll("[data-window-toggle]")),
-    runStateEl: document.getElementById("runState"),
-    releaseStateBadgeEl: document.getElementById("releaseStateBadge"),
-    buildIdEl: document.getElementById("buildId"),
-    commitEl: document.getElementById("commitHash"),
-    logList: document.getElementById("logList"),
-    alertStateEl: document.getElementById("alertState"),
-    qaStateEl: document.getElementById("qaState"),
-    reqRateEl: document.getElementById("reqRate"),
-    errRateEl: document.getElementById("errRate"),
-    latencyEl: document.getElementById("latency"),
-    qaTotalEl: document.getElementById("qaTotal"),
-    qaPassedEl: document.getElementById("qaPassed"),
-    qaFailedEl: document.getElementById("qaFailed"),
-    qaFlakyEl: document.getElementById("qaFlaky"),
-    qaSkippedEl: document.getElementById("qaSkipped"),
-    qaDurationEl: document.getElementById("qaDuration"),
-    uiSummaryMetaEl: document.getElementById("uiSummaryMeta"),
-    perfStateEl: document.getElementById("perfState"),
-    perfSummaryMetaEl: document.getElementById("perfSummaryMeta"),
-    perfScenarioTotalEl: document.getElementById("perfScenarioTotal"),
-    perfScenarioFailedEl: document.getElementById("perfScenarioFailed"),
-    perfWorstAvgEl: document.getElementById("perfWorstAvg"),
-    perfWorstP95El: document.getElementById("perfWorstP95"),
-    perfMinRpsEl: document.getElementById("perfMinRps"),
-    perfErrorRateEl: document.getElementById("perfErrorRate"),
-    signalFooterEl: document.getElementById("signalFooter"),
-    triggerRunBtn: document.getElementById("triggerRun"),
-    pauseReleaseBtn: document.getElementById("pauseRelease"),
-    resumeReleaseBtn: document.getElementById("resumeRelease"),
-    approveReleaseBtn: document.getElementById("approveRelease"),
-    rejectReleaseBtn: document.getElementById("rejectRelease"),
-    rollbackReleaseBtn: document.getElementById("rollbackRelease"),
-    approvalCountEl: document.getElementById("approvalCount"),
-    policyApprovalsEl: document.getElementById("policyApprovals"),
-    policyDriftEl: document.getElementById("policyDrift"),
-    policyCanaryEl: document.getElementById("policyCanary"),
-    incidentBadgeEl: document.getElementById("incidentBadge"),
-    incidentSummaryEl: document.getElementById("incidentSummary"),
-    coreStateEl: document.getElementById("coreState"),
-    jenkinsStatusEl: document.getElementById("jenkinsStatus"),
-    jenkinsDetailEl: document.getElementById("jenkinsDetail"),
-    jenkinsExecutorsEl: document.getElementById("jenkinsExecutors"),
-    jenkinsQueueEl: document.getElementById("jenkinsQueue"),
-    terraformStatusEl: document.getElementById("terraformStatus"),
-    terraformDetailEl: document.getElementById("terraformDetail"),
-    terraformDriftEl: document.getElementById("terraformDrift"),
-    terraformPlanEl: document.getElementById("terraformPlan"),
-    ansibleStatusEl: document.getElementById("ansibleStatus"),
-    ansibleDetailEl: document.getElementById("ansibleDetail"),
-    ansibleRateEl: document.getElementById("ansibleRate"),
-    ansibleDeployEl: document.getElementById("ansibleDeploy"),
-    monitoringStatusEl: document.getElementById("monitoringStatus"),
-    monitoringDetailEl: document.getElementById("monitoringDetail"),
-    monitoringAlertsEl: document.getElementById("monitoringAlerts"),
-    monitoringTargetsEl: document.getElementById("monitoringTargets"),
-    routeHealthBadgeEl: document.getElementById("routeHealthBadge"),
-    routeSummaryEl: document.getElementById("routeSummary"),
-    windowBadgeEl: document.getElementById("windowBadge"),
-    windowNoteEl: document.getElementById("windowNote"),
-    deploymentWindowStatusEl: document.getElementById("deploymentWindowStatus"),
-    maintenanceWindowStatusEl: document.getElementById("maintenanceWindowStatus"),
-    freezeWindowStatusEl: document.getElementById("freezeWindowStatus"),
-  };
+  const dom = {};
+
+  function refreshDom() {
+    dom.stepEls = Array.from(document.querySelectorAll(".step"));
+    dom.stateItems = Array.from(document.querySelectorAll(".state-item"));
+    dom.incidentButtons = Array.from(document.querySelectorAll("[data-incident]"));
+    dom.recoveryButtons = Array.from(document.querySelectorAll("[data-recovery]"));
+    dom.routeItems = Array.from(document.querySelectorAll(".route-item"));
+    dom.routeToggleButtons = Array.from(document.querySelectorAll("[data-route-toggle]"));
+    dom.windowToggleButtons = Array.from(document.querySelectorAll("[data-window-toggle]"));
+    dom.runStateEl = document.getElementById("runState");
+    dom.releaseStateBadgeEl = document.getElementById("releaseStateBadge");
+    dom.buildIdEl = document.getElementById("buildId");
+    dom.commitEl = document.getElementById("commitHash");
+    dom.logList = document.getElementById("logList");
+    dom.alertStateEl = document.getElementById("alertState");
+    dom.qaStateEl = document.getElementById("qaState");
+    dom.reqRateEl = document.getElementById("reqRate");
+    dom.errRateEl = document.getElementById("errRate");
+    dom.latencyEl = document.getElementById("latency");
+    dom.apdexValueEl = document.getElementById("apdexValue");
+    dom.saturationValueEl = document.getElementById("saturationValue");
+    dom.cacheHitValueEl = document.getElementById("cacheHitValue");
+    dom.qaTotalEl = document.getElementById("qaTotal");
+    dom.qaPassedEl = document.getElementById("qaPassed");
+    dom.qaFailedEl = document.getElementById("qaFailed");
+    dom.qaFlakyEl = document.getElementById("qaFlaky");
+    dom.qaSkippedEl = document.getElementById("qaSkipped");
+    dom.qaDurationEl = document.getElementById("qaDuration");
+    dom.uiSummaryMetaEl = document.getElementById("uiSummaryMeta");
+    dom.perfStateEl = document.getElementById("perfState");
+    dom.perfSummaryMetaEl = document.getElementById("perfSummaryMeta");
+    dom.perfScenarioTotalEl = document.getElementById("perfScenarioTotal");
+    dom.perfScenarioFailedEl = document.getElementById("perfScenarioFailed");
+    dom.perfWorstAvgEl = document.getElementById("perfWorstAvg");
+    dom.perfWorstP95El = document.getElementById("perfWorstP95");
+    dom.perfMinRpsEl = document.getElementById("perfMinRps");
+    dom.perfErrorRateEl = document.getElementById("perfErrorRate");
+    dom.signalFooterEl = document.getElementById("signalFooter");
+    dom.triggerRunBtn = document.getElementById("triggerRun");
+    dom.pauseReleaseBtn = document.getElementById("pauseRelease");
+    dom.resumeReleaseBtn = document.getElementById("resumeRelease");
+    dom.approveReleaseBtn = document.getElementById("approveRelease");
+    dom.rejectReleaseBtn = document.getElementById("rejectRelease");
+    dom.rollbackReleaseBtn = document.getElementById("rollbackRelease");
+    dom.approvalCountEl = document.getElementById("approvalCount");
+    dom.policyApprovalsEl = document.getElementById("policyApprovals");
+    dom.policyDriftEl = document.getElementById("policyDrift");
+    dom.policyCanaryEl = document.getElementById("policyCanary");
+    dom.incidentBadgeEl = document.getElementById("incidentBadge");
+    dom.incidentSummaryEl = document.getElementById("incidentSummary");
+    dom.coreStateEl = document.getElementById("coreState");
+    dom.jenkinsStatusEl = document.getElementById("jenkinsStatus");
+    dom.jenkinsDetailEl = document.getElementById("jenkinsDetail");
+    dom.jenkinsExecutorsEl = document.getElementById("jenkinsExecutors");
+    dom.jenkinsQueueEl = document.getElementById("jenkinsQueue");
+    dom.terraformStatusEl = document.getElementById("terraformStatus");
+    dom.terraformDetailEl = document.getElementById("terraformDetail");
+    dom.terraformDriftEl = document.getElementById("terraformDrift");
+    dom.terraformPlanEl = document.getElementById("terraformPlan");
+    dom.ansibleStatusEl = document.getElementById("ansibleStatus");
+    dom.ansibleDetailEl = document.getElementById("ansibleDetail");
+    dom.ansibleRateEl = document.getElementById("ansibleRate");
+    dom.ansibleDeployEl = document.getElementById("ansibleDeploy");
+    dom.monitoringStatusEl = document.getElementById("monitoringStatus");
+    dom.monitoringDetailEl = document.getElementById("monitoringDetail");
+    dom.monitoringAlertsEl = document.getElementById("monitoringAlerts");
+    dom.monitoringTargetsEl = document.getElementById("monitoringTargets");
+    dom.routeHealthBadgeEl = document.getElementById("routeHealthBadge");
+    dom.routeSummaryEl = document.getElementById("routeSummary");
+    dom.windowBadgeEl = document.getElementById("windowBadge");
+    dom.windowNoteEl = document.getElementById("windowNote");
+    dom.deploymentWindowStatusEl = document.getElementById("deploymentWindowStatus");
+    dom.maintenanceWindowStatusEl = document.getElementById("maintenanceWindowStatus");
+    dom.freezeWindowStatusEl = document.getElementById("freezeWindowStatus");
+  }
+
+  refreshDom();
 
   const storage = {
     releaseState: "devops-release-state",
@@ -268,12 +275,16 @@
       reqRate: 1240,
       errRate: 0.62,
       latency: 240,
+      apdex: 0.94,
+      saturation: 62,
+      cacheHit: 96,
     },
   };
 
   state.simulationOn = state.releaseState === "running";
 
   dashboard.dom = dom;
+  dashboard.refreshDom = refreshDom;
   dashboard.storage = storage;
   dashboard.config = config;
   dashboard.state = state;

@@ -102,7 +102,18 @@
     }
   }
 
-  async function loadSignals() {
+  let lastSignature = null;
+  let pollHandle = null;
+
+  function getSignature(data) {
+    if (data?.generatedAt) return data.generatedAt;
+    return JSON.stringify({
+      ui: data?.ui?.summary || null,
+      performance: data?.performance?.summary || null,
+    });
+  }
+
+  async function loadSignals({ force = false } = {}) {
     const source = document.body.dataset.signalsSrc || "../data/release-signals.json";
     try {
       const response = await fetch(source, { cache: "no-store" });
@@ -110,6 +121,11 @@
         throw new Error("Signal fetch failed.");
       }
       const data = await response.json();
+      const signature = getSignature(data);
+      if (!force && signature && signature === lastSignature) {
+        return;
+      }
+      lastSignature = signature || null;
       const metaLabel = `Updated: ${formatTimestamp(data?.generatedAt)}`;
 
       renderUi(data?.ui?.summary, metaLabel);
@@ -128,7 +144,32 @@
     }
   }
 
+  function startPolling() {
+    const pollMs = Number(document.body.dataset.signalsPoll) || 10000;
+    if (pollHandle) {
+      clearInterval(pollHandle);
+      pollHandle = null;
+    }
+
+    loadSignals({ force: true });
+    if (pollMs <= 0) {
+      return;
+    }
+
+    pollHandle = window.setInterval(() => {
+      if (document.hidden) return;
+      loadSignals();
+    }, pollMs);
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        loadSignals();
+      }
+    });
+  }
+
   dashboard.signals = {
     loadSignals,
+    startPolling,
   };
 })();

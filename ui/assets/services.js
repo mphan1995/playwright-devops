@@ -11,6 +11,12 @@
   const serviceUpdatedEl = document.getElementById("serviceUpdated");
   const toggleFailureBtn = document.getElementById("toggleServiceFailure");
   const retryBtn = document.getElementById("retryServiceLoad");
+  const serviceSignalBadgeEl = document.getElementById("serviceSignalBadge");
+  const refreshServiceSignalsBtn = document.getElementById("refreshServiceSignals");
+  const simulatePerfRegressionBtn = document.getElementById("simulatePerfRegression");
+  const clearPerfRegressionBtn = document.getElementById("clearPerfRegression");
+  const serviceSignalRowsEl = document.getElementById("serviceSignalRows");
+  const serviceSignalNoteEl = document.getElementById("serviceSignalNote");
 
   const simulateBudgetBurnBtn = document.getElementById("simulateBudgetBurn");
   const resetSloBtn = document.getElementById("resetSlo");
@@ -39,6 +45,7 @@
   };
 
   const SERVICE_FAIL_KEY = "devops-services-fail";
+  const PERF_REGRESSION_KEY = "devops-perf-regression";
   const ISO_KEY = "devops-iso";
   const RESIDENCY_KEY = "devops-residency";
   const SLO_KEY = "devops-slo";
@@ -120,6 +127,15 @@
   const regionLabels = {
     "ap-southeast-1": "APAC",
     "eu-west-1": "EU West",
+  };
+
+  const signalSource = document.body.dataset.signalsSrc || "../data/release-signals.json";
+  const signalPollMs = Number(document.body.dataset.signalsPoll) || 0;
+
+  const scenarioStatusMap = {
+    pass: { label: "Pass", className: "success" },
+    warn: { label: "Warn", className: "warn" },
+    fail: { label: "Fail", className: "fail" },
   };
 
   let currentRegion = getStoredRegion();
@@ -216,6 +232,123 @@
     if (className) {
       el.classList.add(className);
     }
+  }
+
+  function getPerfRegressionFlag() {
+    return localStorage.getItem(PERF_REGRESSION_KEY) === "true";
+  }
+
+  function setPerfRegressionFlag(value) {
+    localStorage.setItem(PERF_REGRESSION_KEY, value ? "true" : "false");
+  }
+
+  function formatNumber(value) {
+    if (!Number.isFinite(value)) return "n/a";
+    return new Intl.NumberFormat("en-US").format(Math.round(value));
+  }
+
+  function formatMs(value) {
+    if (!Number.isFinite(value)) return "n/a";
+    return `${Math.round(value)} ms`;
+  }
+
+  function formatRps(value) {
+    if (!Number.isFinite(value)) return "n/a";
+    return `${formatNumber(value)} rps`;
+  }
+
+  function formatPercent(value) {
+    if (!Number.isFinite(value)) return "n/a";
+    return `${(value * 100).toFixed(2)}%`;
+  }
+
+  function formatTimestamp(isoString) {
+    if (!isoString) return "N/A";
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return "N/A";
+    return date.toISOString().replace("T", " ").replace("Z", " UTC");
+  }
+
+  function updateSignalControls() {
+    const active = getPerfRegressionFlag();
+    if (simulatePerfRegressionBtn) simulatePerfRegressionBtn.disabled = active;
+    if (clearPerfRegressionBtn) clearPerfRegressionBtn.disabled = !active;
+  }
+
+  function applyRegression(metrics) {
+    if (!metrics || !getPerfRegressionFlag()) return metrics;
+    return {
+      avgMs: Number.isFinite(metrics.avgMs) ? metrics.avgMs * 2.1 : metrics.avgMs,
+      p95Ms: Number.isFinite(metrics.p95Ms) ? metrics.p95Ms * 2.6 : metrics.p95Ms,
+      rps: Number.isFinite(metrics.rps) ? metrics.rps * 0.55 : metrics.rps,
+      errorRate: Number.isFinite(metrics.errorRate) ? Math.min(metrics.errorRate + 0.03, 1) : metrics.errorRate,
+    };
+  }
+
+  function renderSignalRows(scenarios) {
+    if (!serviceSignalRowsEl) return;
+    serviceSignalRowsEl.innerHTML = "";
+
+    if (!scenarios.length) {
+      const row = document.createElement("tr");
+      row.innerHTML = "<td colspan=\"7\">No signal data loaded.</td>";
+      serviceSignalRowsEl.appendChild(row);
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    scenarios.forEach((scenario) => {
+      const metrics = applyRegression(scenario.metrics || {});
+      const status = scenarioStatusMap[scenario.status] || scenarioStatusMap.warn;
+      const row = document.createElement("tr");
+      if (scenario.path && scenario.path.includes("services.html")) {
+        row.classList.add("active");
+      }
+      row.innerHTML = `
+        <td>${scenario.name || "unknown"}</td>
+        <td>${scenario.path || "-"}</td>
+        <td><span class="status-chip ${status.className}">${status.label}</span></td>
+        <td>${formatMs(metrics?.avgMs)}</td>
+        <td>${formatMs(metrics?.p95Ms)}</td>
+        <td>${formatRps(metrics?.rps)}</td>
+        <td>${formatPercent(metrics?.errorRate)}</td>
+      `;
+      fragment.appendChild(row);
+    });
+    serviceSignalRowsEl.appendChild(fragment);
+  }
+
+  function updateSignalBadge(scenarios) {
+    if (!serviceSignalBadgeEl) return;
+    if (!scenarios.length) {
+      serviceSignalBadgeEl.textContent = "No Data";
+      serviceSignalBadgeEl.className = "tag";
+      return;
+    }
+
+    const hasFail = scenarios.some((scenario) => scenario.status === "fail");
+    const hasWarn = scenarios.some((scenario) => scenario.status === "warn");
+    const isRegression = getPerfRegressionFlag();
+
+    if (hasFail) {
+      serviceSignalBadgeEl.textContent = "Perf: Fail";
+      serviceSignalBadgeEl.className = "tag failed";
+      return;
+    }
+    if (hasWarn || isRegression) {
+      serviceSignalBadgeEl.textContent = isRegression ? "Perf: Degraded" : "Perf: Warn";
+      serviceSignalBadgeEl.className = "tag warn";
+      return;
+    }
+    serviceSignalBadgeEl.textContent = "Perf: Pass";
+    serviceSignalBadgeEl.className = "tag succeeded";
+  }
+
+  function updateSignalNote(updatedAt) {
+    if (!serviceSignalNoteEl) return;
+    const timestamp = formatTimestamp(updatedAt);
+    const regression = getPerfRegressionFlag() ? "Regression: ON" : "Regression: OFF";
+    serviceSignalNoteEl.textContent = `Signals updated: ${timestamp} | ${regression}`;
   }
 
   function updateBanner(state, message) {
@@ -444,6 +577,48 @@
     }
   }
 
+  let signalPollHandle = null;
+
+  async function loadServiceSignals() {
+    if (!serviceSignalRowsEl) return;
+    try {
+      const response = await fetch(signalSource, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("Signal fetch failed");
+      }
+      const data = await response.json();
+      const scenarios = Array.isArray(data?.performance?.scenarios) ? data.performance.scenarios : [];
+      renderSignalRows(scenarios);
+      updateSignalBadge(scenarios);
+      updateSignalNote(data?.generatedAt);
+    } catch (error) {
+      renderSignalRows([]);
+      updateSignalBadge([]);
+      updateSignalNote(null);
+    } finally {
+      updateSignalControls();
+    }
+  }
+
+  function startSignalPolling() {
+    if (!serviceSignalRowsEl) return;
+    if (signalPollHandle) {
+      clearInterval(signalPollHandle);
+      signalPollHandle = null;
+    }
+    loadServiceSignals();
+    if (signalPollMs <= 0) return;
+    signalPollHandle = window.setInterval(() => {
+      if (document.hidden) return;
+      loadServiceSignals();
+    }, signalPollMs);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        loadServiceSignals();
+      }
+    });
+  }
+
   async function loadServices() {
     resetFailureView();
     updateBanner("healthy", "Telemetry feed healthy.");
@@ -475,6 +650,26 @@
   if (retryBtn) {
     retryBtn.addEventListener("click", () => {
       loadServices();
+    });
+  }
+
+  if (refreshServiceSignalsBtn) {
+    refreshServiceSignalsBtn.addEventListener("click", () => {
+      loadServiceSignals();
+    });
+  }
+
+  if (simulatePerfRegressionBtn) {
+    simulatePerfRegressionBtn.addEventListener("click", () => {
+      setPerfRegressionFlag(true);
+      loadServiceSignals();
+    });
+  }
+
+  if (clearPerfRegressionBtn) {
+    clearPerfRegressionBtn.addEventListener("click", () => {
+      setPerfRegressionFlag(false);
+      loadServiceSignals();
     });
   }
 
@@ -514,4 +709,5 @@
   updateIsoUI();
   updateSloUI();
   loadServices();
+  startSignalPolling();
 })();

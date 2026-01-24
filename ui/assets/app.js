@@ -327,6 +327,13 @@ async function loadComponent(slot) {
   }
 }
 
+function signalComponentsLoaded() {
+  if (document.body) {
+    document.body.dataset.componentsLoaded = "true";
+  }
+  document.dispatchEvent(new CustomEvent("components:loaded"));
+}
+
 function initApp() {
   currentRole = getStoredRole();
   const params = new URLSearchParams(window.location.search);
@@ -360,6 +367,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await Promise.all(slots.map(loadComponent));
   }
   initApp();
+  signalComponentsLoaded();
 });
 
 document.addEventListener("route:health-change", (event) => {
