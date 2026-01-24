@@ -4,100 +4,115 @@
     return;
   }
 
-  const { dom, state } = dashboard;
+  function initDashboard() {
+    dashboard.refreshDom?.();
 
-  if (dom.triggerRunBtn) {
-    dom.triggerRunBtn.addEventListener("click", () => dashboard.release.handleTrigger());
-  }
-  if (dom.pauseReleaseBtn) {
-    dom.pauseReleaseBtn.addEventListener("click", () => dashboard.release.handlePause());
-  }
-  if (dom.resumeReleaseBtn) {
-    dom.resumeReleaseBtn.addEventListener("click", () => dashboard.release.handleResume());
-  }
-  if (dom.approveReleaseBtn) {
-    dom.approveReleaseBtn.addEventListener("click", () => dashboard.release.handleApprove());
-  }
-  if (dom.rejectReleaseBtn) {
-    dom.rejectReleaseBtn.addEventListener("click", () => dashboard.release.handleReject());
-  }
-  if (dom.rollbackReleaseBtn) {
-    dom.rollbackReleaseBtn.addEventListener("click", () => dashboard.release.handleRollback());
-  }
+    const { dom, state } = dashboard;
+    dashboard.metrics.refreshCharts?.();
 
-  dom.incidentButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const key = button.dataset.incident;
-      if (key) {
-        dashboard.incidents.toggleIncident(key);
-      }
+    if (dom.triggerRunBtn) {
+      dom.triggerRunBtn.addEventListener("click", () => dashboard.release.handleTrigger());
+    }
+    if (dom.pauseReleaseBtn) {
+      dom.pauseReleaseBtn.addEventListener("click", () => dashboard.release.handlePause());
+    }
+    if (dom.resumeReleaseBtn) {
+      dom.resumeReleaseBtn.addEventListener("click", () => dashboard.release.handleResume());
+    }
+    if (dom.approveReleaseBtn) {
+      dom.approveReleaseBtn.addEventListener("click", () => dashboard.release.handleApprove());
+    }
+    if (dom.rejectReleaseBtn) {
+      dom.rejectReleaseBtn.addEventListener("click", () => dashboard.release.handleReject());
+    }
+    if (dom.rollbackReleaseBtn) {
+      dom.rollbackReleaseBtn.addEventListener("click", () => dashboard.release.handleRollback());
+    }
+
+    dom.incidentButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const key = button.dataset.incident;
+        if (key) {
+          dashboard.incidents.toggleIncident(key);
+        }
+      });
     });
-  });
 
-  dom.recoveryButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const action = button.dataset.recovery;
-      if (action) {
-        dashboard.incidents.applyRecovery(action);
-      }
+    dom.recoveryButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const action = button.dataset.recovery;
+        if (action) {
+          dashboard.incidents.applyRecovery(action);
+        }
+      });
     });
-  });
 
-  dom.routeToggleButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const route = button.dataset.routeToggle;
-      if (route) {
-        dashboard.routes.toggleRoute(route);
-      }
+    dom.routeToggleButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const route = button.dataset.routeToggle;
+        if (route) {
+          dashboard.routes.toggleRoute(route);
+        }
+      });
     });
-  });
 
-  dom.windowToggleButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const key = button.dataset.windowToggle;
-      if (key) {
-        dashboard.windows.toggleWindowOverride(key);
-      }
+    dom.windowToggleButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const key = button.dataset.windowToggle;
+        if (key) {
+          dashboard.windows.toggleWindowOverride(key);
+        }
+      });
     });
-  });
 
-  document.addEventListener("role:change", () => {
+    document.addEventListener("role:change", () => {
+      dashboard.release.updateControlState();
+    });
+
+    document.addEventListener("route:health-change", (event) => {
+      dashboard.routes.updateRouteHealthUI(event.detail?.health);
+    });
+
+    window.addEventListener("resize", () => {
+      dashboard.metrics.drawAllSparklines();
+    });
+
+    dashboard.release.syncRunMetadata();
+    dashboard.release.updateReleaseTags();
+    dashboard.release.updatePolicySignals();
+    dashboard.incidents.updateIncidentsUI();
+    dashboard.incidents.updateCoreStatus();
+    dashboard.routes.updateRouteHealthUI();
+    dashboard.windows.updateWindowUI();
     dashboard.release.updateControlState();
-  });
+    dashboard.release.applyReleaseConstraints();
+    dashboard.labs?.init?.();
+    dashboard.metrics.updateMetrics();
+    dashboard.signals?.startPolling?.();
+    dashboard.kubernetes?.init?.();
+    dashboard.iac?.init?.();
 
-  document.addEventListener("route:health-change", (event) => {
-    dashboard.routes.updateRouteHealthUI(event.detail?.health);
-  });
+    if (state.releaseState === "running") {
+      dashboard.release.syncPipeline();
+    } else if (state.releaseState === "queued") {
+      dashboard.release.setPipelineQueued();
+    } else if (state.releaseState === "succeeded") {
+      dashboard.release.setPipelineSucceeded();
+    } else if (state.releaseState === "failed" || state.releaseState === "rolled-back") {
+      dashboard.release.setPipelineFailed();
+    }
 
-  window.addEventListener("resize", () => {
-    dashboard.metrics.drawAllSparklines();
-  });
+    window.devopsApp?.setSimulationState?.(state.simulationOn);
 
-  dashboard.release.syncRunMetadata();
-  dashboard.release.updateReleaseTags();
-  dashboard.release.updatePolicySignals();
-  dashboard.incidents.updateIncidentsUI();
-  dashboard.incidents.updateCoreStatus();
-  dashboard.routes.updateRouteHealthUI();
-  dashboard.windows.updateWindowUI();
-  dashboard.release.updateControlState();
-  dashboard.release.applyReleaseConstraints();
-  dashboard.metrics.updateMetrics();
-  dashboard.signals?.loadSignals?.();
-
-  if (state.releaseState === "running") {
-    dashboard.release.syncPipeline();
-  } else if (state.releaseState === "queued") {
-    dashboard.release.setPipelineQueued();
-  } else if (state.releaseState === "succeeded") {
-    dashboard.release.setPipelineSucceeded();
-  } else if (state.releaseState === "failed" || state.releaseState === "rolled-back") {
-    dashboard.release.setPipelineFailed();
+    setInterval(dashboard.release.advancePipeline, 4200);
+    setInterval(dashboard.metrics.updateMetrics, 2000);
+    setInterval(dashboard.windows.updateWindowUI, 60000);
   }
 
-  window.devopsApp?.setSimulationState?.(state.simulationOn);
+  if (document.body?.dataset.componentsLoaded === "true") {
+    initDashboard();
+    return;
+  }
 
-  setInterval(dashboard.release.advancePipeline, 4200);
-  setInterval(dashboard.metrics.updateMetrics, 2000);
-  setInterval(dashboard.windows.updateWindowUI, 60000);
+  document.addEventListener("components:loaded", initDashboard, { once: true });
 })();
