@@ -6,7 +6,13 @@
     <title>Service Health - Playwright DevOps</title>
     <link rel="stylesheet" href="../assets/style.css" />
   </head>
-  <body data-page="services" data-page-title="Service Health" data-page-subtitle="Service mesh visibility with blast radius awareness.">
+  <body
+    data-page="services"
+    data-page-title="Service Health"
+    data-page-subtitle="Service mesh visibility with blast radius awareness."
+    data-signals-src="../data/release-signals.json"
+    data-signals-poll="15000"
+  >
     <div class="atmosphere">
       <span class="orb orb-1"></span>
       <span class="orb orb-2"></span>
@@ -66,6 +72,42 @@
               <h4>Service feed unavailable</h4>
               <p>The dashboard remains online. Retry to restore service telemetry.</p>
             </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>Service Signals &amp; Performance</h3>
+                <p>Release signal snapshots mapped to service routes and performance checks.</p>
+              </div>
+              <div class="panel-actions">
+                <span class="tag" id="serviceSignalBadge">No Data</span>
+                <button class="btn ghost" id="refreshServiceSignals">Refresh</button>
+                <button class="btn ghost" id="simulatePerfRegression">Simulate Regression</button>
+                <button class="btn primary" id="clearPerfRegression">Clear</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="serviceSignalTable">
+                <thead>
+                  <tr>
+                    <th>Scenario</th>
+                    <th>Path</th>
+                    <th>Status</th>
+                    <th>Avg</th>
+                    <th>P95</th>
+                    <th>RPS</th>
+                    <th>Error</th>
+                  </tr>
+                </thead>
+                <tbody id="serviceSignalRows">
+                  <tr>
+                    <td colspan="7">No signal data loaded.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note-strip" id="serviceSignalNote">Signals updated: N/A</div>
           </section>
 
           <section class="panel">
