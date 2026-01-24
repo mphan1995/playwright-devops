@@ -1,36 +1,36 @@
 {
   "schemaVersion": "1.0",
-  "generatedAt": "2026-01-22T08:30:18.524Z",
+  "generatedAt": "2026-01-24T15:35:49.575Z",
   "ui": {
     "source": "test-results/ui/ui-results.json",
     "summary": {
-      "status": "pass",
-      "label": "Pass",
+      "status": "fail",
+      "label": "Fail",
       "totals": {
-        "total": 25,
-        "passed": 25,
-        "failed": 0,
+        "total": 40,
+        "passed": 39,
+        "failed": 1,
         "skipped": 0,
         "flaky": 0
       },
-      "durationMs": 90766.59999999999
+      "durationMs": 135498.76299999998
     }
   },
   "performance": {
     "source": "test-results/performance/perf-results.json",
     "summary": {
-      "status": "pass",
-      "label": "Pass",
+      "status": "warn",
+      "label": "Warn",
       "scenarios": {
-        "total": 5,
+        "total": 8,
         "passed": 5,
         "failed": 0,
-        "skipped": 0
+        "skipped": 3
       },
       "highlights": {
-        "avgMs": 42.61,
-        "p95Ms": 58.83,
-        "rps": 87.2,
+        "avgMs": 24.71,
+        "p95Ms": 40.11,
+        "rps": 155.62,
         "errorRate": 0
       }
     },
@@ -40,9 +40,20 @@
         "path": "/pages/index.html",
         "status": "pass",
         "metrics": {
-          "avgMs": 20.11,
-          "p95Ms": 27.79,
-          "rps": 178.95,
+          "avgMs": 17.88,
+          "p95Ms": 23.86,
+          "rps": 216.39,
+          "errorRate": 0
+        }
+      },
+      {
+        "name": "dashboard-admin",
+        "path": "/pages/index.html?role=admin",
+        "status": "skip",
+        "metrics": {
+          "avgMs": 24.71,
+          "p95Ms": 32.37,
+          "rps": 226.77,
           "errorRate": 0
         }
       },
@@ -51,9 +62,20 @@
         "path": "/pages/services.html",
         "status": "pass",
         "metrics": {
-          "avgMs": 24.65,
-          "p95Ms": 34.84,
-          "rps": 152.08,
+          "avgMs": 18.24,
+          "p95Ms": 24.32,
+          "rps": 201.03,
+          "errorRate": 0
+        }
+      },
+      {
+        "name": "services-failover",
+        "path": "/pages/services.html?fail=1",
+        "status": "skip",
+        "metrics": {
+          "avgMs": 18.26,
+          "p95Ms": 27.66,
+          "rps": 243.4,
           "errorRate": 0
         }
       },
@@ -62,9 +84,9 @@
         "path": "/pages/users.html",
         "status": "pass",
         "metrics": {
-          "avgMs": 22.04,
-          "p95Ms": 47.91,
-          "rps": 162.68,
+          "avgMs": 21.25,
+          "p95Ms": 39.57,
+          "rps": 176.28,
           "errorRate": 0
         }
       },
@@ -73,9 +95,9 @@
         "path": "/pages/permissions.html",
         "status": "pass",
         "metrics": {
-          "avgMs": 29.55,
-          "p95Ms": 44.64,
-          "rps": 127.79,
+          "avgMs": 24.45,
+          "p95Ms": 35.18,
+          "rps": 155.62,
           "errorRate": 0
         }
       },
@@ -84,9 +106,20 @@
         "path": "/pages/settings.html",
         "status": "pass",
         "metrics": {
-          "avgMs": 42.61,
-          "p95Ms": 58.83,
-          "rps": 87.2,
+          "avgMs": 16.62,
+          "p95Ms": 21.94,
+          "rps": 230.59,
+          "errorRate": 0
+        }
+      },
+      {
+        "name": "settings-admin",
+        "path": "/pages/settings.html?role=admin",
+        "status": "skip",
+        "metrics": {
+          "avgMs": 22.98,
+          "p95Ms": 40.11,
+          "rps": 205.01,
           "errorRate": 0
         }
       }
