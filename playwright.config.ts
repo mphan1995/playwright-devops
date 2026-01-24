@@ -1,5 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
+const useWebServer = process.env.PW_USE_SERVER === '1' || Boolean(process.env.CI);
+
 export default defineConfig({
   reporter: [
     ['list'],
@@ -8,11 +10,14 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:8080',
   },
-
-  webServer: {
-    command: 'npm run serve',
-    port: 8080,
-    timeout: 120 * 1000,
-    reuseExistingServer: !process.env.CI,
-  },
+  ...(useWebServer
+    ? {
+        webServer: {
+          command: 'npm run serve',
+          port: 8080,
+          timeout: 120 * 1000,
+          reuseExistingServer: !process.env.CI,
+        },
+      }
+    : {}),
 });
