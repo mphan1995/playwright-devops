@@ -5,6 +5,14 @@
     "warmup": 5,
     "method": "GET"
   },
+  "signals": [
+    {
+      "name": "release-signals",
+      "path": "/data/release-signals.json",
+      "jsonPaths": ["performance.scenarios", "ui.summary"],
+      "arrayMin": 1
+    }
+  ],
   "scenarios": [
     { "name": "dashboard", "path": "/pages/index.html" },
     { "name": "dashboard-admin", "path": "/pages/index.html?role=admin", "iterations": 30, "concurrency": 6 },

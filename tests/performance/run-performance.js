@@ -7,9 +7,10 @@ const { spawn } = require("child_process");
 
 const rootDir = path.resolve(__dirname, "../..");
 const scenariosPath = path.join(__dirname, "scenarios.json");
-const baselinePath = path.join(__dirname, "baseline.json");
+const baselinePath = path.join(__dirname, "k6", "baseline.json");
 const resultsDir = path.join(rootDir, "test-results", "performance");
 const resultsPath = path.join(resultsDir, "perf-results.json");
+
 
 const scenariosConfig = JSON.parse(fs.readFileSync(scenariosPath, "utf8"));
 const baseUrl = process.env.BASE_URL || scenariosConfig.baseUrl || "http://localhost:8080";
