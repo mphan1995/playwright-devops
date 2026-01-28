@@ -12,6 +12,9 @@ playwright-report/
 test-results/
 *.zip
 
+# Performance Tests
+perf-results.json
+Review.md
 # =========================
 # Environment variables
 # =========================
