@@ -1,0 +1,86 @@
+{
+  "generatedAt": "2026-01-28T03:35:24.349Z",
+  "baseUrl": "http://localhost:8080",
+  "scenarios": {
+    "dashboard": {
+      "total": 24,
+      "avgMs": 8.04,
+      "p95Ms": 12.54,
+      "minMs": 3.86,
+      "maxMs": 14.04,
+      "rps": 471.74,
+      "errorRate": 0,
+      "elapsedMs": 50.88
+    },
+    "dashboard-admin": {
+      "total": 30,
+      "avgMs": 7.66,
+      "p95Ms": 11.58,
+      "minMs": 4.04,
+      "maxMs": 13.06,
+      "rps": 731.77,
+      "errorRate": 0,
+      "elapsedMs": 41
+    },
+    "services": {
+      "total": 24,
+      "avgMs": 6.03,
+      "p95Ms": 7.69,
+      "minMs": 4.18,
+      "maxMs": 8.16,
+      "rps": 618.52,
+      "errorRate": 0,
+      "elapsedMs": 38.8
+    },
+    "services-failover": {
+      "total": 26,
+      "avgMs": 8.81,
+      "p95Ms": 13.88,
+      "minMs": 6.02,
+      "maxMs": 14.94,
+      "rps": 531.72,
+      "errorRate": 0,
+      "elapsedMs": 48.9
+    },
+    "users": {
+      "total": 24,
+      "avgMs": 5.1,
+      "p95Ms": 6.4,
+      "minMs": 3.54,
+      "maxMs": 6.93,
+      "rps": 714.92,
+      "errorRate": 0,
+      "elapsedMs": 33.57
+    },
+    "permissions": {
+      "total": 24,
+      "avgMs": 5.7,
+      "p95Ms": 7.66,
+      "minMs": 3.4,
+      "maxMs": 8.38,
+      "rps": 659.98,
+      "errorRate": 0,
+      "elapsedMs": 36.36
+    },
+    "settings": {
+      "total": 24,
+      "avgMs": 5.91,
+      "p95Ms": 9.17,
+      "minMs": 3.07,
+      "maxMs": 9.76,
+      "rps": 633.9,
+      "errorRate": 0,
+      "elapsedMs": 37.86
+    },
+    "settings-admin": {
+      "total": 26,
+      "avgMs": 6.75,
+      "p95Ms": 9.67,
+      "minMs": 3.56,
+      "maxMs": 10.53,
+      "rps": 697.87,
+      "errorRate": 0,
+      "elapsedMs": 37.26
+    }
+  }
+}
